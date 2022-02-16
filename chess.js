@@ -7,30 +7,29 @@ function cuadrado(color, x, y, width, height)
   ctx.fillRect(x, y, width, height);
 }
 
-var linea   = 0;
 var columna = 0;
+var lado    = 150;
 var x = 0;
 var y = 0;
 var color1 = "#452a1e";
 var color2 = "#dbb779";
 
-
-while(linea < 8)
+for(i=0;i<8;i++)
 {
-  cuadrado(color1, x, y, 150, 150);
-  x += 150;
-  cuadrado(color2, x, y, 150,150);
-  x += 150;
-  linea++;
+  cuadrado(color1, x, y, lado, lado);
+  x += lado;
 
-  if(linea == 8 && columna != 8)
+  cuadrado(color2, x, y, lado, lado);
+  x += lado;
+
+  if(i == 7 && columna != 8)
   {
     var aux = color1;
     color1  = color2;
     color2  = aux;
     x = 0;
-    y += 150;
-    linea = 0;
+    y += lado;
+    i = 0;
     columna++;
   }
 }
