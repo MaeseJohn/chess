@@ -13,7 +13,7 @@ class Board
 
     createBoard()
     {
-        var drawWhite    = false;
+        var drawWhite = false;
 
         for(var r = 0; r < this.boardSize; r++)
         {

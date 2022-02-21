@@ -1,5 +1,5 @@
-var t = document.getElementById("canvas");
-var ctx = t.getContext("2d");
+var cv = document.getElementById("canvas");
+var ctx = cv.getContext("2d");
 
 const SQUARE_SIZE = 100; // In pixels
 const BOAR_SIZE   = 8;  // Namber of squares in a row and column
@@ -7,68 +7,71 @@ const PIECES_SIZE = 100; // In pixels
 const LIGHT_BROWN = "#dbb779";
 const DARK_BROWN  = "#452a1e";
 
-const WHITE_PIECES_SRC = {
-  PAWN:  "pieces/white/white-pawn.png",
-  BISHOP:"pieces/white/white-bishop.png",
-  KNIGHT:"pieces/white/white-knight.png",
-  ROOK:  "pieces/white/white-rook.png",  
-  KING:  "pieces/white/white-king.png",
-  QUEEN: "pieces/white/white-queen.png"
-};
-const BLACK_PIECES_SRC = {
-  PAWN:  "pieces/black/black-pawn.png",
-  BISHOP:"pieces/black/black-bishop.png",
-  KNIGHT:"pieces/black/black-knight.png",
-  ROOK:  "pieces/black/black-rook.png",  
-  KING:  "pieces/black/black-king.png",
-  QUEEN: "pieces/black/black-queen.png"
-};
+var img = new Image();
+var pawn = new Pawn("light", 100, 100);
+img.src = pawn.src;
 
-
-putAllPieces();
 var board = new Board(ctx, BOAR_SIZE, SQUARE_SIZE, LIGHT_BROWN, DARK_BROWN);
 board.createBoard();
+createPiece(img, pawn.x, pawn.y);
 
-function putAllPieces()
+//Try to move the pawn
+function createPiece(img, x , y)
 {
-  putOneSizePieces(WHITE_PIECES_SRC, 7);
-  putOneSizePieces(BLACK_PIECES_SRC, 0);
-}
-
-function putOneSizePieces(piecesSource, y)
-{
-  createPiece(piecesSource.ROOK, 0*SQUARE_SIZE, y*SQUARE_SIZE);
-  createPiece(piecesSource.KNIGHT, 1*SQUARE_SIZE, y*SQUARE_SIZE);
-  createPiece(piecesSource.BISHOP, 2*SQUARE_SIZE, y*SQUARE_SIZE);
-  createPiece(piecesSource.QUEEN, 3*SQUARE_SIZE, y*SQUARE_SIZE);
-  createPiece(piecesSource.KING, 4*SQUARE_SIZE, y*SQUARE_SIZE);
-  createPiece(piecesSource.BISHOP, 5*SQUARE_SIZE, y*SQUARE_SIZE);
-  createPiece(piecesSource.KNIGHT, 6*SQUARE_SIZE, y*SQUARE_SIZE);
-  createPiece(piecesSource.ROOK, 7*SQUARE_SIZE, y*SQUARE_SIZE);
-
-  if(y == 0)
-  {
-    y++;
-  }
-  else if (y == 7)
-  {
-    y--;
-  }
-  
-  for(i = 0; i < 8; i++)
-  {
-    createPiece(piecesSource.PAWN, i*SQUARE_SIZE, y*SQUARE_SIZE);
-  }
-}
-
-function createPiece(src, x, y)
-{
-  var img = new Image();
-  img.src = src;
   ctx.drawImage(img, x, y, PIECES_SIZE, PIECES_SIZE);
-
   img.onload = function()
   {
     ctx.drawImage(img, x, y, PIECES_SIZE, PIECES_SIZE);
   }
 }
+
+
+
+
+var arrastrar = false;
+var delta = new Object();
+
+function oMousePos(cv, evt) {
+  var rect = cv.getBoundingClientRect();
+  return { // devuelve un objeto
+    x: Math.round(evt.clientX - rect.left),
+    y: Math.round(evt.clientY - rect.top)
+  };
+}
+
+cv.addEventListener("mousedown", function(evt) {
+
+  var mousePos = oMousePos(cv, evt);
+  if((pawn.x < mousePos.x && pawn.x+SQUARE_SIZE > mousePos.x) && (pawn.y < mousePos.y && pawn.y+SQUARE_SIZE > mousePos.y))
+  {
+    arrastrar = true;
+    delta.x = pawn.x - mousePos.x;
+    delta.y = pawn.y - mousePos.y;
+  }
+
+}, false);
+
+cv.addEventListener("mousemove", function(evt) {
+  var mousePos = oMousePos(cv, evt);
+
+  if (arrastrar) {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    board.createBoard();
+    pawn.x = mousePos.x + delta.x, pawn.y = mousePos.y + delta.y
+    ctx.drawImage(img, pawn.x, pawn.y, PIECES_SIZE, PIECES_SIZE); 
+  }
+
+}, false);
+
+cv.addEventListener("mouseup", function(evt) {
+  var x, y;
+  x = Math.trunc((pawn.x + 50) / 100);
+  y = Math.trunc((pawn.y + 50) / 100);
+  pawn.x = x*100;
+  pawn.y = y*100;
+  
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  board.createBoard();
+  ctx.drawImage(img, pawn.x, pawn.y, PIECES_SIZE, PIECES_SIZE);
+  arrastrar = false;
+}, false);

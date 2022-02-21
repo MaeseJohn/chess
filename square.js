@@ -6,7 +6,7 @@ class Square
         this.ctx = ctx;
         this.x = x;
         this.y = y; 
-        this.isEmpty = true; 
+        this.isEmpty = true;  
     }
 
     drawSquare(color, x, y, size)
