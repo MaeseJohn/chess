@@ -1,12 +1,11 @@
 class Square
 {
-
+    pieceObjet;
     constructor(ctx, x, y)
     {
         this.ctx = ctx;
         this.x = x;
         this.y = y; 
-        this.isEmpty = true;  
     }
 
     drawSquare(color, x, y, size)
