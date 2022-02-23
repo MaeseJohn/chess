@@ -10,10 +10,15 @@ class Board
         this.squares = new Array(64);
     }
 
+    drawSquare(color, x, y, size)
+    {
+        this.ctx.fillStyle = color;
+        this.ctx.fillRect(x, y, size, size);  
+    }
 
     createBoard()
     {
-        var drawWhite = false;
+        var drawWhite = true;
 
         for(var r = 0; r < this.boardSize; r++)
         {
@@ -21,18 +26,19 @@ class Board
             {
                 if(drawWhite)
                 {
-                    this.squares[c + r*8] = new Square(ctx,  c*this.squareSize, r*this.squareSize);
-                    this.squares[c + r*8].drawSquare(this.lightColor, c*this.squareSize, r*this.squareSize, this.squareSize);
+                    this.squares[c + r * 8] = new Piece();
+                    this.squares[c + r * 8].isEmpty = true;
+                    this.drawSquare(this.lightColor, c * this.squareSize, r * this.squareSize, this.squareSize);
                 }
                 else
                 {
-                    this.squares[c + r*8] = new Square(ctx,  c*this.squareSize, r*this.squareSize);
-                    this.squares[c + r*8].drawSquare(this.darkColor, c*this.squareSize, r*this.squareSize, this.squareSize);
+                    this.squares[c + r * 8] = new Piece();
+                    this.squares[c + r * 8].isEmpty = true;
+                    this.drawSquare(this.darkColor,  c * this.squareSize, r * this.squareSize, this.squareSize);
                 }
                 drawWhite = !drawWhite;
             }
             drawWhite = !drawWhite;
         }
     }
-    
 }
