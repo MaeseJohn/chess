@@ -34,37 +34,47 @@ function createPiece(x, y, color, type)
 
 function createAllPieces()
 { 
-  createPiece(0, 0, "white", "rook");
-  createPiece(1, 0, "white", "knight");
-  createPiece(2, 0, "white", "bishop");
-  createPiece(3, 0, "white", "queen");
-  createPiece(4, 0, "white", "king");
-  createPiece(5, 0, "white", "bishop"); 
-  createPiece(6, 0, "white", "knight"); 
-  createPiece(7, 0, "white", "rook");
+  var color = "white";
+  var y = 0;
+  var x = 1;
+  for(var i = 0; i < 2; i++)
+  {
+   
+    createPiece(0, y, color, "rook");
+    createPiece(1, y, color, "knight");
+    createPiece(2, y, color, "bishop");
+    createPiece(3, y, color, "queen");
+    createPiece(4, y, color, "king");
+    createPiece(5, y, color, "bishop"); 
+    createPiece(6, y, color, "knight"); 
+    createPiece(7, y, color, "rook");
+  
 
-  for(var i = 0; i < 8; i++)
-  { 
-    //Creating pawns
-    createPiece(i, 1, "white", "pawn");
+    for(var r = 0; r < 8; r++)
+    { 
+      //Creating pawns
+      createPiece(r, y + x, color, "pawn");
+    }
+
+    color = "black";
+    y = 7;
+    x = x - 2;
   }
 }
 
 function printAllPieces()
 {
-  printPiece(board.squares[0].src, board.squares[0].xCoordinate, board.squares[0].yCoordinate);
-  printPiece(board.squares[1].src, board.squares[1].xCoordinate, board.squares[1].yCoordinate);
-  printPiece(board.squares[2].src, board.squares[2].xCoordinate, board.squares[2].yCoordinate);
-  printPiece(board.squares[3].src, board.squares[3].xCoordinate, board.squares[3].yCoordinate);
-  printPiece(board.squares[4].src, board.squares[4].xCoordinate, board.squares[4].yCoordinate);
-  printPiece(board.squares[5].src, board.squares[5].xCoordinate, board.squares[5].yCoordinate);
-  printPiece(board.squares[6].src, board.squares[6].xCoordinate, board.squares[6].yCoordinate);
-  printPiece(board.squares[7].src, board.squares[7].xCoordinate, board.squares[7].yCoordinate);
- 
+    
+  for(var i = 0; i < 8; i++)
+  {
+    printPiece(board.squares[i].src, board.squares[i].xCoordinate, board.squares[i].yCoordinate);
+    printPiece(board.squares[i + 8].src, board.squares[i + 8].xCoordinate, board.squares[i + 8].yCoordinate);
+  }
 
   for(var i = 0; i < 8; i++)
   { 
-    printPiece(board.squares[i + 8].src, board.squares[i + 8].xCoordinate, board.squares[i + 8].yCoordinate);
+    printPiece(board.squares[i + 56].src, board.squares[i + 56].xCoordinate, board.squares[i + 56].yCoordinate);
+    printPiece(board.squares[i + 48].src, board.squares[i + 48].xCoordinate, board.squares[i + 48].yCoordinate);
   }
 }
 
