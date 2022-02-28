@@ -46,7 +46,33 @@ class Piece
             {
                 this.squareColor(this.xCoordinate, this.yCoordinate + 100, 100);
             }
+        }
+    }
 
+    pawnValidMove(mousePos)
+    {
+        if(this.color == "black")
+        {
+            if(this.yCoordinate == 600)
+            {
+                return ((mousePos.y * 100 ==  this.yCoordinate - 100 || mousePos.y * 100 == this.yCoordinate - 200) && (mousePos.x * 100 == this.xCoordinate));
+            }
+            else
+            {
+                console.log("black despues de 600");
+                return ((mousePos.y * 100 == this.yCoordinate - 100) && (mousePos.x * 100 == this.xCoordinate));
+            }
+        }
+        else
+        {
+            if(this.yCoordinate == 100)
+            {
+                return ((mousePos.y * 100 == this.yCoordinate + 100 || mousePos.y * 100 ==  this.yCoordinate + 200)  && (mousePos.x * 100 == this.xCoordinate));
+            }
+            else
+            {
+                return ((mousePos.y * 100 == this.yCoordinate + 100) && (mousePos.x * 100 == this.xCoordinate));
+            }
         }
     }
 }

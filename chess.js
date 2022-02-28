@@ -131,20 +131,28 @@ cv.addEventListener("mousedown", function(evt)
   }
   else if(pieceClicked)
   {
-    printSelectedSquare(selectedPiece.xCoordinate, selectedPiece.yCoordinate);
-    printSelectedSquare(mousePos.x * 100, mousePos.y * 100);
-    printPiece(selectedPiece.src, mousePos.x * 100, mousePos.y * 100);
-    
-    selectedPiece.xCoordinate = mousePos.x * 100;
-    selectedPiece.yCoordinate = mousePos.y * 100;
-    board.squares[mousePos.x + mousePos.y * 8] = selectedPiece;
+    if(selectedPiece.pawnValidMove(mousePos))
+    {
 
-    var emptySquare = new Piece();
-    emptySquare.isEmpty = true;
-    board.squares[actualSquare] = emptySquare;
+      printSelectedSquare(selectedPiece.xCoordinate, selectedPiece.yCoordinate);
+      printSelectedSquare(mousePos.x * 100, mousePos.y * 100);
+      printPiece(selectedPiece.src, mousePos.x * 100, mousePos.y * 100);
+      
+      selectedPiece.xCoordinate = mousePos.x * 100;
+      selectedPiece.yCoordinate = mousePos.y * 100;
+      board.squares[mousePos.x + mousePos.y * 8] = selectedPiece;
 
-    pieceClicked = false;
-    console.log(board.squares);
+      var emptySquare = new Piece();
+      emptySquare.isEmpty = true;
+      board.squares[actualSquare] = emptySquare;
+
+      pieceClicked = false;
+      console.log(board.squares);
+    }
+    else
+    {
+      pieceClicked = false;
+    }
   }
 }, false);
 
