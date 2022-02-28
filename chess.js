@@ -91,7 +91,7 @@ var actualSquare;
 var selectedPiece;
 var pieceClicked = false;
 
-
+//Return an object with the coordinates / 100 to know what square u click
 function oMousePos(cv, evt) 
 {
   var rect = cv.getBoundingClientRect();
@@ -101,34 +101,38 @@ function oMousePos(cv, evt)
   };
 }
 
+//I use this function to know what color print in the selected square
+function printSelectedSquare(x, y)
+{
+  if(x / 100 % 2 == 0  && y / 100 % 2 == 0)
+    {
+      board.drawSquare(LIGHT_BROWN, x, y, SQUARE_SIZE); 
+    }
+    else if(x / 100 % 2 == 1  && y / 100 % 2 == 1)
+    {
+      board.drawSquare(LIGHT_BROWN, x, y, SQUARE_SIZE); 
+    }else
+    {
+      board.drawSquare(DARK_BROWN, x, y, SQUARE_SIZE);
+    }
+}
+
 cv.addEventListener("mousedown", function(evt)
 {
   var mousePos;
+  mousePos = oMousePos(cv, evt);
   if(!pieceClicked)
   {
-    mousePos = oMousePos(cv, evt);
-    actualSquare = mousePos.x + mousePos.y  * 8;
-    console.log(mousePos)
+    actualSquare = mousePos.x + mousePos.y * 8;
     selectedPiece = board.squares[actualSquare];
+    selectedPiece.showPwanMove();
     pieceClicked = true;
     console.log(selectedPiece);
   }
   else if(pieceClicked)
   {
-    mousePos = oMousePos(cv, evt);
-
-    if(selectedPiece.xCoordinate / 100 % 2 == 0  && selectedPiece.yCoordinate / 100 % 2 == 0)
-    {
-      board.drawSquare(LIGHT_BROWN, selectedPiece.xCoordinate, selectedPiece.yCoordinate, SQUARE_SIZE); 
-    }
-    else if(selectedPiece.xCoordinate / 100 % 2 == 1  && selectedPiece.yCoordinate / 100 % 2 == 1)
-    {
-      board.drawSquare(LIGHT_BROWN, selectedPiece.xCoordinate, selectedPiece.yCoordinate, SQUARE_SIZE); 
-    }else
-    {
-      board.drawSquare(DARK_BROWN, selectedPiece.xCoordinate, selectedPiece.yCoordinate, SQUARE_SIZE);
-    }
-    
+    printSelectedSquare(selectedPiece.xCoordinate, selectedPiece.yCoordinate);
+    printSelectedSquare(mousePos.x * 100, mousePos.y * 100);
     printPiece(selectedPiece.src, mousePos.x * 100, mousePos.y * 100);
     
     selectedPiece.xCoordinate = mousePos.x * 100;

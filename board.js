@@ -41,4 +41,5 @@ class Board
             drawWhite = !drawWhite;
         }
     }
+    
 }
