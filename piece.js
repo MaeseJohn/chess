@@ -1,22 +1,30 @@
 var cv = document.getElementById("canvas");
 var ctx = cv.getContext("2d");
+const VALID_MOVES_COLOR = 'rgba(145, 201, 48, 0.5)';
 
 class Piece
 {
-    xCoordinate;
-    yCoordinate;
-    isEmpty;
-    constructor(color, type)
+    constructor(color, type, file, rank)
     {
-        this.isEmpty = false;
         this.color  = color;
         this.type = type;
-        this.src = "pieces/"+ color + "/" + color + "-" + type + ".png";
+        this.file = file;
+        this.rank = rank;
+        this.src = "pieces/" + color + "/" + color + "-" + type + ".png";
     }
 
-    squareColor(x, y, size)
+    getType()
     {
-        ctx.fillStyle = 'rgba(145, 201, 48, 0.5)';
+        return this.type;
+    }
+    getColor()
+    {
+        return this.color;
+    }
+
+    /*squareColor(x, y, size, color)
+    {
+        ctx.fillStyle = color;
         ctx.fillRect(x, y, size, size);  
     }
 
@@ -27,27 +35,28 @@ class Piece
         {
             if(this.yCoordinate == 600)
             {
-                this.squareColor(this.xCoordinate, this.yCoordinate - 100, 100);
-                this.squareColor(this.xCoordinate, this.yCoordinate - 200, 100);
+                this.squareColor(this.xCoordinate, this.yCoordinate - 100, 100, VALID_MOVES_COLOR);
+                this.squareColor(this.xCoordinate, this.yCoordinate - 200, 100, VALID_MOVES_COLOR);
             }
             else
             {
-                this.squareColor(this.xCoordinate, this.yCoordinate -100, 100);
+                this.squareColor(this.xCoordinate, this.yCoordinate -100, 100, VALID_MOVES_COLOR);
             }
         }
         else
         {
             if(this.yCoordinate == 100)
             {
-                this.squareColor(this.xCoordinate, this.yCoordinate + 100, 100);
-                this.squareColor(this.xCoordinate, this.yCoordinate + 200, 100);
+                this.squareColor(this.xCoordinate, this.yCoordinate + 100, 100, VALID_MOVES_COLOR);
+                this.squareColor(this.xCoordinate, this.yCoordinate + 200, 100, VALID_MOVES_COLOR);
             }
             else
             {
-                this.squareColor(this.xCoordinate, this.yCoordinate + 100, 100);
+                this.squareColor(this.xCoordinate, this.yCoordinate + 100, 100, VALID_MOVES_COLOR);
             }
         }
     }
+    
 
     pawnValidMove(mousePos)
     {
@@ -74,5 +83,5 @@ class Piece
                 return ((mousePos.y * 100 == this.yCoordinate + 100) && (mousePos.x * 100 == this.xCoordinate));
             }
         }
-    }
+    }*/
 }
