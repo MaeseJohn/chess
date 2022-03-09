@@ -9,11 +9,14 @@ const DARK_BROWN  = "#452a1e";
 
 const BOARD = new Board(BOAR_SIZE, SQUARE_SIZE, LIGHT_BROWN, DARK_BROWN);
 BOARD.initBoard();
+let pawn = new Pawn("black", "A", "8");
 ///board.createAllPieces();
 //board.printAllPieces();
 
+BOARD.setStartPiecesPos();
+console.log(BOARD.getPiece("A", 7));
+console.log(BOARD.getBoard());
 
-console.log(BOARD.squares);
 
 
 
@@ -54,9 +57,13 @@ cv.addEventListener("mousedown", function(evt)
 {
   var mousePos;
   mousePos = oMousePos(cv, evt);
-  actualSquare = board.squares[mousePos.x + mousePos.y * 8];
+  actualSquare = BOARD.getSquare(mousePos.x, mousePos.y);
+  console.log(actualSquare.getName());
+  console.log(actualSquare);
 
-  if(pieceClicked)
+  
+
+ /* if(pieceClicked)
   {
     if(!actualSquare.isEmpty())
     {
@@ -81,7 +88,7 @@ cv.addEventListener("mousedown", function(evt)
     actualSquare.piece.showPawnMove();
 
     
-  }
+  }*/
 }, false);
 /*cv.addEventListener("mousedown", function(evt)
 {
