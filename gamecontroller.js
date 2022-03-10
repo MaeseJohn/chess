@@ -13,7 +13,6 @@ let pawn = new Pawn("black", "A", "8");
 ///board.createAllPieces();
 //board.printAllPieces();
 
-BOARD.setStartPiecesPos();
 console.log(BOARD.getPiece("A", 7));
 console.log(BOARD.getBoard());
 

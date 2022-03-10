@@ -27,7 +27,21 @@ class Piece
     {
         return this.#color;
     }
+    
+    getSrc()
+    {
+        return this.#src;
+    }
+    
+    getRank()
+    {
+        return this.#rank;
+    }
 
+    getFile()
+    {
+        return this.#file;
+    }
     /*squareColor(x, y, size, color)
     {
         ctx.fillStyle = color;

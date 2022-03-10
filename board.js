@@ -21,7 +21,7 @@ class Board
     //GETTERS
     getPiece(file, rank)
     {
-        let square = file.charCodeAt(0) - 44 + (rank - 8) * -10;
+        var square = file.charCodeAt(0) - 44 + (rank - 8) * -10;
         if(!this.#squares[square].isOutOfBoard())
         {
             return this.#squares[square].getPiece();
@@ -41,7 +41,7 @@ class Board
     //SETTERS
     setPiece(file, rank, piece)
     {
-        let square = file.charCodeAt(0) - 44 + (rank - 8) * -10;
+        var square = file.charCodeAt(0) - 44 + (rank - 8) * -10;
         if(!this.#squares[square].isOutOfBoard())
         {
             this.#squares[square].setPiece(piece);
@@ -64,14 +64,30 @@ class Board
         
         for(var i = 0; i < 2; i++)
         {
-            /*this.setPiece("A", y, color, "rook");
-            this.setPiece("B", y, color, "knight");
-            this.setPiece("C", y, color, "bishop");
-            this.setPiece("D", y, color, "king");
-            this.setPiece("E", y, color, "queen");
-            this.setPiece("F", y, color, "bishop"); 
-            this.setPiece("G", y, color, "knight"); 
-            this.setPiece("H", y, color, "rook");*/
+            var rookA = new Rook(color, "A", y);
+            this.setPiece("A", y, rookA);
+
+            var knightB = new Knight(color, "B", y);
+            this.setPiece("B", y, knightB);
+
+            var bishopC = new Bishop(color, "C", y);
+            this.setPiece("C", y, bishopC);
+
+            var king = new King(color, "D", y);
+            this.setPiece("D", y, king);
+
+            var queen = new Queen(color, "E", y);
+            this.setPiece("E", y, queen);
+
+            var bishopF = new Bishop(color, "F", y);
+            this.setPiece("F", y, bishopF);
+
+            var knightG = new Knight(color, "G", y);
+            this.setPiece("G", y, knightG); 
+
+            var rookH = new Rook(color, "H", y);
+            this.setPiece("H", y, rookH);
+
 
             for(var r = 0; r < 8; r++)
             { 
@@ -80,8 +96,8 @@ class Board
             }
 
             color = "white";
-            y = 0;
-            x = -2;
+            y = 1;
+            x = -1;
         }
     }
 
@@ -118,9 +134,10 @@ class Board
             drawWhite = !drawWhite;
         }
         this.#setStartPiecesPos();
+        this.#printAllPieces();
     }
 
-    printPiece(src, x, y)
+    #printPiece(src, x, y)
     {
         var img = new Image();
         img.src = src;
@@ -133,21 +150,30 @@ class Board
         }).bind(this)
         //Investigate bind
     }
-/*
-    printAllPieces()
+
+    #printAllPieces()
     { 
-      for(var i = 0; i < 8; i++)
-      {
-        this.printPiece(this.#squares[i].piece.src, this.#squares[i].piece.xCoordinate, this.#squares[i].piece.yCoordinate);
-        this.printPiece(this.#squares[i + 8].piece.src, this.#squares[i + 8].piece.xCoordinate, this.#squares[i + 8].piece.yCoordinate);
-      }
+        var xCoordinate = function (f, x)
+        {
+            return (this.#squares[f + x].getPiece().getFile().charCodeAt(0) - 65) * 100;
+        }
+        var yCoordinate = function (f, y)
+        {
+            return (this.#squares[f + y].getPiece().getRank() - 8) * -100;
+        }
+
+        for(var i = 0; i < 8; i++)
+        {
+            this.#printPiece(this.#squares[i + 21].getPiece().getSrc(), xCoordinate.call(this, i, 21), yCoordinate.call(this, i, 21));
+            this.#printPiece(this.#squares[i + 31].getPiece().getSrc(), xCoordinate.call(this, i, 31), yCoordinate.call(this, i, 31));
+        }
     
-      for(var i = 0; i < 8; i++)
-      { 
-        this.printPiece(this.#squares[i + 56].piece.src, this.#squares[i + 56].piece.xCoordinate, this.#squares[i + 56].piece.yCoordinate);
-        this.printPiece(this.#squares[i + 48].piece.src, this.#squares[i + 48].piece.xCoordinate, this.#squares[i + 48].piece.yCoordinate);
-      }
-    }  */
+        for(var i = 0; i < 8; i++)
+        { 
+            this.#printPiece(this.#squares[i + 91].getPiece().getSrc(), xCoordinate.call(this, i, 91), yCoordinate.call(this, i, 91));
+            this.#printPiece(this.#squares[i + 81].getPiece().getSrc(), xCoordinate.call(this, i, 81), yCoordinate.call(this, i, 81));
+        }
+    }  
 }
 
     
