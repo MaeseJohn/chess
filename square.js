@@ -22,7 +22,7 @@ class Square
 
     isEmpty()
     {
-     return (this.#piece == null);
+        return (this.#piece == null);
     }
 
     setPiece(piece)

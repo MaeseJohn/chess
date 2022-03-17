@@ -7,28 +7,37 @@ class Pawn extends Piece
 
         if(color === "white")
         {
-            this.#PIECE_DIRECTONS = ["UP", "UP_LEFT", "UP_RIGHT"];
+            this.#PIECE_DIRECTONS = [DIRECTION_VALUE.UP, DIRECTION_VALUE.UP_LEFT, DIRECTION_VALUE.UP_RIGHT];
         }
         else if(color === "black")
         {
-            this.#PIECE_DIRECTONS = ["DOWN", "DOWN_LEFT", "DOWN_RIGHT"];
+            this.#PIECE_DIRECTONS = [DIRECTION_VALUE.DOWN, DIRECTION_VALUE.DOWN_LEFT, DIRECTION_VALUE.DOWN_RIGHT];
         }
     }
-    #PIECE_DIRECTION_VALUE =
-    {
-        UP:-10,
-        UP_LEFT:-9,
-        UP_RIGHT:-11,
-        DOWN:10,
-        DOWN_LEFT:9,
-        DOWN_RIGHT:11
-    };
 
     getValidMovements(board)
     {
+        let validMovements = [];
+
+        this.#PIECE_DIRECTONS.map(direction => {
+            let destinationSquare = board.calculatePosition(this.getFile(), this.getRank(), direction);
+            if(direction === DIRECTION_VALUE.UP || direction === DIRECTION_VALUE.DOWN)
+            {
+                console.log(destinationSquare);
+                if(destinationSquare.isEmpty())
+                {
+                    validMovements.push(destinationSquare);
+                }
+            }
+            else if(!destinationSquare.isEmpty())
+            {
+                if(destinationSquare.getPiece().getColor() != this.getColor())
+                {
+                    validMovements.push(destinationSquare);
+                }
+            }
+        })
         
-    }
-
-
-    
+        return validMovements;
+    }  
 }

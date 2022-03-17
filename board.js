@@ -1,30 +1,73 @@
-var cv = document.getElementById("canvas");
-var ctx = cv.getContext("2d");
+const DIRECTION_VALUE =
+{
+    UP:-10,
+    UP_LEFT:-11,
+    UP_RIGHT:-9,
+    UP_UP_RIGHT:-19,
+    UP_UP_LEFT:-21,
+    LEFT:-1,
+    LEFT_LEFT_UP:-12,
+    LEFT_LEFT_DOWN:8, 
+    RIGHT:1,
+    RIGHT_RIGHT_DOWN:12, 
+    RIGHT_RIGHT_UP:-8,
+    DOWN:10,
+    DOWN_LEFT:9,
+    DOWN_RIGHT:11,
+    DOWN_DOWN_LEFT:19,
+    DOWN_DOWN_RIGHT:21,
+};
+
 
 class Board
 {
+    #cv
+    #ctx
     #boardSize
     #squaresize
     #lightColor
     #darkColor
     #squares
+    #PIECE_DIRECTION_VALUE
+
     constructor(boardSize, squaresize, lightColor, darkColor)
     {
+        this.#cv = document.getElementById("canvas");
+        this.#ctx = this.#cv.getContext("2d");
         this.#boardSize = boardSize;
         this.#squaresize = squaresize;
         this.#lightColor = lightColor;
         this.#darkColor = darkColor;
         this.#squares = new Array(120);
+
+        this.#cv.addEventListener("mousedown", this.#boardClickEvent.bind(this))
+    }
+
+
+    #boardClickEvent(evt)
+    {
+        let rect = this.#cv.getBoundingClientRect();
+        let x = Math.trunc(Math.round(evt.clientX - rect.left) / 100);
+        let y = Math.trunc(Math.round(evt.clientY - rect.top) / 100);
+            
+        let actualSquare = this.getSquare(x, y);
+        //const event = new CustomEvent('boardClick', { detail: actualSquare });
+        window.dispatchEvent(new CustomEvent('boardClick', { detail: actualSquare }));
+    }
+
+    #getIndexFromFileRank(file, rank)
+    {
+        return file.charCodeAt(0) - 44 + (rank - 8) * -10;
     }
 
     
     //GETTERS
     getPiece(file, rank)
     {
-        var square = file.charCodeAt(0) - 44 + (rank - 8) * -10;
-        if(!this.#squares[square].isOutOfBoard())
+        let squareIndex = this.#getIndexFromFileRank(file, rank)
+        if(!this.#squares[squareIndex].isOutOfBoard())
         {
-            return this.#squares[square].getPiece();
+            return this.#squares[squareIndex].getPiece();
         }
     }
     
@@ -41,10 +84,10 @@ class Board
     //SETTERS
     setPiece(file, rank, piece)
     {
-        var square = file.charCodeAt(0) - 44 + (rank - 8) * -10;
-        if(!this.#squares[square].isOutOfBoard())
+        let squareIndex = this.#getIndexFromFileRank(file, rank);
+        if(!this.#squares[squareIndex].isOutOfBoard())
         {
-            this.#squares[square].setPiece(piece);
+            this.#squares[squareIndex].setPiece(piece);
         }
     }
     
@@ -52,46 +95,46 @@ class Board
 
     #drawSquare(color, x, y, size)
     {
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, size, size);  
+        this.#ctx.fillStyle = color;
+        this.#ctx.fillRect(x, y, size, size);  
     }
 
     #setStartPiecesPos()
     {
-        var color = "black";
-        var y = 8;
-        var x = 1;
+        let color = "black";
+        let y = 8;
+        let x = 1;
         
         for(var i = 0; i < 2; i++)
         {
-            var rookA = new Rook(color, "A", y);
+            let rookA = new Rook(color, "A", y);
             this.setPiece("A", y, rookA);
 
-            var knightB = new Knight(color, "B", y);
+            let knightB = new Knight(color, "B", y);
             this.setPiece("B", y, knightB);
 
-            var bishopC = new Bishop(color, "C", y);
+            let bishopC = new Bishop(color, "C", y);
             this.setPiece("C", y, bishopC);
 
-            var king = new King(color, "D", y);
+            let king = new King(color, "D", y);
             this.setPiece("D", y, king);
 
-            var queen = new Queen(color, "E", y);
+            let queen = new Queen(color, "E", y);
             this.setPiece("E", y, queen);
 
-            var bishopF = new Bishop(color, "F", y);
+            let bishopF = new Bishop(color, "F", y);
             this.setPiece("F", y, bishopF);
 
-            var knightG = new Knight(color, "G", y);
+            let knightG = new Knight(color, "G", y);
             this.setPiece("G", y, knightG); 
 
-            var rookH = new Rook(color, "H", y);
+            let rookH = new Rook(color, "H", y);
             this.setPiece("H", y, rookH);
 
 
             for(var r = 0; r < 8; r++)
             { 
-                var pawn = new Pawn(color, String.fromCharCode(65 + r), y - x);
+                let pawn = new Pawn(color, String.fromCharCode(65 + r), y - x);
                 this.setPiece(String.fromCharCode(65 + r), y - x, pawn);
             }
 
@@ -108,16 +151,16 @@ class Board
             this.#squares[i]= new Square();
         }
 
-        var drawWhite = true;
-        var switchName = 8;
+        let drawWhite = true;
+        let switchName = 8;
 
         for(var r = 0; r < this.#boardSize; r++)
         {
             
             for(var c = 0; c < this.#boardSize; c++)
             {
-                var tmp = (c + 21 + r * 10);
-                var squareName = (String.fromCharCode(65 + c) + switchName);
+                let tmp = (c + 21 + r * 10);
+                let squareName = (String.fromCharCode(65 + c) + switchName);
                 if(drawWhite)
                 {
                     this.#squares[tmp] = new Square(this.#lightColor, squareName);
@@ -139,28 +182,24 @@ class Board
 
     #printPiece(src, x, y)
     {
-        var img = new Image();
+        let img = new Image();
         img.src = src;
 
-        ctx.drawImage(img, x, y, this.#squaresize, this.#squaresize);
+        this.#ctx.drawImage(img, x, y, this.#squaresize, this.#squaresize);
         
         img.onload = (function()
         {
-            ctx.drawImage(img, x, y, this.#squaresize, this.#squaresize);
+            this.#ctx.drawImage(img, x, y, this.#squaresize, this.#squaresize);
         }).bind(this)
         //Investigate bind
     }
 
     #printAllPieces()
     { 
-        var xCoordinate = function (f, x)
-        {
-            return (this.#squares[f + x].getPiece().getFile().charCodeAt(0) - 65) * 100;
-        }
-        var yCoordinate = function (f, y)
-        {
-            return (this.#squares[f + y].getPiece().getRank() - 8) * -100;
-        }
+        let xCoordinate = (f, x) => (this.#squares[f + x].getPiece().getFile().charCodeAt(0) - 65) * 100;
+
+        let yCoordinate = (f, y) => (this.#squares[f + y].getPiece().getRank() - 8) * -100;
+      
 
         for(var i = 0; i < 8; i++)
         {
@@ -174,6 +213,15 @@ class Board
             this.#printPiece(this.#squares[i + 81].getPiece().getSrc(), xCoordinate.call(this, i, 81), yCoordinate.call(this, i, 81));
         }
     }  
+
+    calculatePosition(file, rank, direction)
+    {
+        let squareIndex = this.#getIndexFromFileRank(file, rank);
+        let destinationSquareIndex = squareIndex + direction;
+
+        return this.#squares[destinationSquareIndex];
+    }
+ 
 }
 
     
