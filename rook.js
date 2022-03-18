@@ -1,18 +1,12 @@
 class Rook extends Piece
 {
     #PIECE_DIRECTONS;
-    constructor(color, file, rank)
+    constructor(color)
     {
-        super(color,"rook", file, rank);
-        this.#PIECE_DIRECTONS = ["UP", "DOWN", "LEFT", "RIGHT"];
+        super(color,"rook");
+        this.#PIECE_DIRECTONS = [DIRECTION_VALUE.UP, DIRECTION_VALUE.DOWN, DIRECTION_VALUE.LEFT, DIRECTION_VALUE.RIGHT];
     }
-    #PIECE_DIRECTION_VALUE =
-    {
-        UP:-10,
-        DOWN:10,
-        LEFT:-1,
-        RIGHT:1
-    };
+
 
     getValidMovements(board)
     {

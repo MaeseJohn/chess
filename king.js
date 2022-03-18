@@ -1,18 +1,12 @@
 class King extends Piece
 {
     #PIECE_DIRECTONS;
-    constructor(color, file, rank)
+    constructor(color)
     {
-        super(color,"king", file, rank);
-        this.#PIECE_DIRECTONS = ["UP", "LEFT", "RIGHT", "DOWN"];
+        super(color,"king");
+        this.#PIECE_DIRECTONS = [DIRECTION_VALUE.UP, DIRECTION_VALUE.LEFT, DIRECTION_VALUE.RIGHT, DIRECTION_VALUE.DOWN];
     }
-    #PIECE_DIRECTION_VALUE =
-    {
-        UP:-10,
-        LEFT:-1,
-        RIGHT:1,
-        DOWN:10,
-    };
+
 
     getValidMovements(board)
     {

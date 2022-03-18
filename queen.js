@@ -1,22 +1,13 @@
 class Queen extends Piece
 {
     #PIECE_DIRECTONS;
-    constructor(color, file, rank)
+    constructor(color)
     {
-        super(color,"queen", file, rank);
-        this.#PIECE_DIRECTONS = ["UP", "LEFT", "RIGHT", "DOWN", "UP_LEFT", "UP_RIGHT", "DOWN_LEFT", "DOWN_RIGHT"];
+        super(color,"queen");
+        this.#PIECE_DIRECTONS = [DIRECTION_VALUE.UP, DIRECTION_VALUE.LEFT, DIRECTION_VALUE.RIGHT, DIRECTION_VALUE.DOWN, 
+            DIRECTION_VALUE.UP_LEFT, DIRECTION_VALUE.UP_RIGHT, DIRECTION_VALUE.DOWN_LEFT, DIRECTION_VALUE.DOWN_RIGHT];
     }
-    #PIECE_DIRECTION_VALUE =
-    {
-        UP:-10,
-        LEFT:-1,
-        RIGHT:1,
-        DOWN:10,
-        UP_LEFT:-11,
-        UP_RIGHT:-9,
-        DOWN_LEFT:9,
-        DOWN_RIGHT:11
-    };
+
 
     getValidMovements(board)
     {

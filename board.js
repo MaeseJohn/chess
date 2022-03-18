@@ -42,17 +42,11 @@ class Board
     }
 
 
-    #boardClickEvent(evt)
+    #getIndexFromSquareName(name)
     {
-        let rect = this.#cv.getBoundingClientRect();
-        let x = Math.trunc(Math.round(evt.clientX - rect.left) / 100);
-        let y = Math.trunc(Math.round(evt.clientY - rect.top) / 100);
-            
-        let actualSquare = this.getSquare(x, y);
-        //const event = new CustomEvent('boardClick', { detail: actualSquare });
-        window.dispatchEvent(new CustomEvent('boardClick', { detail: actualSquare }));
+        return (name.charCodeAt(0) - 44 + (name.charCodeAt(1) - 56) * - 10);
     }
-
+    
     #getIndexFromFileRank(file, rank)
     {
         return file.charCodeAt(0) - 44 + (rank - 8) * -10;
@@ -102,22 +96,29 @@ class Board
         }
     }
     
-    //METHODS
+    
+     /////////////////////////////////
+    ////////MOVEMETS METHODS/////////
+   ///////////////////////////////// 
 
-    #drawSquare(color, x, y)
+    #boardClickEvent(evt)
     {
-        this.#ctx.fillStyle = color;
-        this.#ctx.fillRect(x * this.#squaresize, y * this.#squaresize, this.#squaresize, this.#squaresize);  
+        let rect = this.#cv.getBoundingClientRect();
+        let x = Math.trunc(Math.round(evt.clientX - rect.left) / 100);
+        let y = Math.trunc(Math.round(evt.clientY - rect.top) / 100);
+        
+        let actualSquare = this.getSquare(x, y);
+        //const event = new CustomEvent('boardClick', { detail: actualSquare });
+        window.dispatchEvent(new CustomEvent('boardClick', { detail: actualSquare }));
     }
-
-
+    
     unDrawValidMovements(validMovements)
     {
         validMovements.map(item => {
             let coordinates = this.#getCoordinatesFormFileRank(item.getName());
-
+            
             this.#drawSquare(item.getColor(), coordinates.x, coordinates.y);
-       
+            
             if(!item.isEmpty())
             {
                 this.#printPiece(item.getPiece().getSrc(), coordinates.x, coordinates.y);
@@ -129,9 +130,9 @@ class Board
     {
         validMovements.map(item => {
             let coordinates = this.#getCoordinatesFormFileRank(item.getName());
-
+            
             this.#drawSquare(GREEN, coordinates.x, coordinates.y);
-        
+            
             if(!item.isEmpty())
             {
                 this.#printPiece(item.getPiece().getSrc(), coordinates.x, coordinates.y);
@@ -139,6 +140,23 @@ class Board
         })
     }
 
+    movePiece(piece, destinationsquare)
+    {
+        this.#drawSquare()
+        destinationsquare.setPiece(piece);
+        
+    }
+
+     ///////////////////////
+    ///////METHODS/////////
+   ///////////////////////
+
+    #drawSquare(color, x, y)
+    {
+        this.#ctx.fillStyle = color;
+        this.#ctx.fillRect(x * this.#squaresize, y * this.#squaresize, this.#squaresize, this.#squaresize);  
+    }
+    
     #setStartPiecesPos()
     {
         let color = "black";
@@ -147,40 +165,40 @@ class Board
         
         for(var i = 0; i < 2; i++)
         {
-            let rookA = new Rook(color, "A", y);
+            let rookA = new Rook(color);
             this.setPiece("A", y, rookA);
 
-            let knightB = new Knight(color, "B", y);
+            let knightB = new Knight(color);
             this.setPiece("B", y, knightB);
 
-            let bishopC = new Bishop(color, "C", y);
+            let bishopC = new Bishop(color);
             this.setPiece("C", y, bishopC);
 
-            let king = new King(color, "D", y);
+            let king = new King(color);
             this.setPiece("D", y, king);
 
-            let queen = new Queen(color, "E", y);
+            let queen = new Queen(color);
             this.setPiece("E", y, queen);
 
-            let bishopF = new Bishop(color, "F", y);
+            let bishopF = new Bishop(color);
             this.setPiece("F", y, bishopF);
 
-            let knightG = new Knight(color, "G", y);
+            let knightG = new Knight(color);
             this.setPiece("G", y, knightG); 
 
-            let rookH = new Rook(color, "H", y);
+            let rookH = new Rook(color);
             this.setPiece("H", y, rookH);
 
 
             for(var r = 0; r < 8; r++)
             { 
-                let pawn = new Pawn(color, String.fromCharCode(65 + r), y - x);
+                let pawn = new Pawn(color);
                 this.setPiece(String.fromCharCode(65 + r), y - x, pawn);
             }
 
             color = "white";
             y = 1;
-            x = -1;
+            x = - 1;
         }
     }
 
@@ -236,27 +254,29 @@ class Board
 
     #printAllPieces()
     { 
-        let xCoordinate = (f, x) => (this.#squares[f + x].getPiece().getFile().charCodeAt(0) - 65) * 100;
+        let xCoordinate = (f, x) => (this.#squares[f + x].getName().charCodeAt(0) - 65) * 100;
 
-        let yCoordinate = (f, y) => (this.#squares[f + y].getPiece().getRank() - 8) * -100;
+        let yCoordinate = (f, y) => (this.#squares[f + y].getName().charCodeAt(1) - 8) * -100;
+
+        let coordinates = (f, r) => this.#getCoordinatesFormFileRank(this.#squares[f + r].getName());
       
 
         for(var i = 0; i < 8; i++)
         {
-            this.#printPiece(this.#squares[i + 21].getPiece().getSrc(), xCoordinate.call(this, i, 21), yCoordinate.call(this, i, 21));
-            this.#printPiece(this.#squares[i + 31].getPiece().getSrc(), xCoordinate.call(this, i, 31), yCoordinate.call(this, i, 31));
+            this.#printPiece(this.#squares[i + 21].getPiece().getSrc(), coordinates(i, 21).x * 100, coordinates(i, 21).y * 100);
+            this.#printPiece(this.#squares[i + 31].getPiece().getSrc(), coordinates(i, 31).x * 100, coordinates(i, 31).y * 100);
         }
     
         for(var i = 0; i < 8; i++)
         { 
-            this.#printPiece(this.#squares[i + 91].getPiece().getSrc(), xCoordinate.call(this, i, 91), yCoordinate.call(this, i, 91));
-            this.#printPiece(this.#squares[i + 81].getPiece().getSrc(), xCoordinate.call(this, i, 81), yCoordinate.call(this, i, 81));
+            this.#printPiece(this.#squares[i + 91].getPiece().getSrc(), coordinates(i, 91).x * 100, coordinates(i, 91).y * 100);
+            this.#printPiece(this.#squares[i + 81].getPiece().getSrc(), coordinates(i, 81).x * 100, coordinates(i, 81).y * 100);
         }
     }  
 
-    calculatePosition(file, rank, direction)
+    calculatePosition(squareName, direction)
     {
-        let squareIndex = this.#getIndexFromFileRank(file, rank);
+        let squareIndex = this.#getIndexFromSquareName(squareName);
         let destinationSquareIndex = squareIndex + direction;
 
         return this.#squares[destinationSquareIndex];

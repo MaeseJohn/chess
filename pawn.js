@@ -15,12 +15,12 @@ class Pawn extends Piece
         }
     }
 
-    getValidMovements(board)
+    getValidMovements(board, square)
     {
         let validMovements = [];
 
         this.#PIECE_DIRECTONS.map(direction => {
-            let destinationSquare = board.calculatePosition(this.getFile(), this.getRank(), direction);
+            let destinationSquare = board.calculatePosition(square.getName(), direction);
             if(direction === DIRECTION_VALUE.UP || direction === DIRECTION_VALUE.DOWN)
             {
                 console.log(destinationSquare);

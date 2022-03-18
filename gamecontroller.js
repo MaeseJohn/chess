@@ -35,7 +35,7 @@ window.addEventListener('boardClick', evt =>
     {
       clickedPiece = square.getPiece();
       pieceWasClicked = true;
-      validMovements = clickedPiece.getValidMovements(BOARD);
+      validMovements = clickedPiece.getValidMovements(BOARD, square);
       BOARD.drawValidMovements(validMovements);
     }
   }
@@ -45,6 +45,7 @@ window.addEventListener('boardClick', evt =>
     
     if(validMovements.includes(square))
     {
+      
       changeTurn();
       pieceWasClicked = false;
       validMovements  = undefined;

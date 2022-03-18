@@ -4,15 +4,11 @@ class Piece
 {
     #color;
     #type;
-    #file;
-    #rank;
     #src;
-    constructor(color, type, file, rank)
+    constructor(color, type)
     {
         this.#color  = color;
         this.#type = type;
-        this.#file = file;
-        this.#rank = rank;
         this.#src = "pieces/" + color + "/" + color + "-" + type + ".png";
     }
 
@@ -29,15 +25,5 @@ class Piece
     getSrc()
     {
         return this.#src;
-    }
-    
-    getRank()
-    {
-        return this.#rank;
-    }
-
-    getFile()
-    {
-        return this.#file;
     }
 }

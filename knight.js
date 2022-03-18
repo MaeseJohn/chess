@@ -1,23 +1,13 @@
 class Knight extends Piece
 {
     #PIECE_DIRECTONS;
-    constructor(color, file, rank)
+    constructor(color)
     {
-        super(color,"knight", file, rank);
-        this.#PIECE_DIRECTONS = ["UP_UP_RIGHT", "UP_UP_LEFT", "LEFT_LEFT_UP", "LEFT_LEFT_DOWN", "DOWN_DOWN_LEFT", "DOWN_DOWN_RIGHT", "RIGHT_RIGHT_DOWN", "RIGHT_RIGHT_UP"];
+        super(color,"knight");
+        this.#PIECE_DIRECTONS = [DIRECTION_VALUE.UP_UP_RIGHT, DIRECTION_VALUE.UP_UP_LEFT, DIRECTION_VALUE.LEFT_LEFT_UP, DIRECTION_VALUE.LEFT_LEFT_DOWN, 
+            DIRECTION_VALUE.DOWN_DOWN_LEFT, DIRECTION_VALUE.DOWN_DOWN_RIGHT, DIRECTION_VALUE.RIGHT_RIGHT_DOWN, DIRECTION_VALUE.RIGHT_RIGHT_UP];
     }
-    #PIECE_DIRECTION_VALUE =
-    {
-        UP_UP_RIGHT:-19,
-        UP_UP_LEFT:-21,
-        LEFT_LEFT_UP:-12,
-        LEFT_LEFT_DOWN:8,
-        DOWN_DOWN_LEFT:19,
-        DOWN_DOWN_RIGHT:21,
-        RIGHT_RIGHT_DOWN:12, 
-        RIGHT_RIGHT_UP:-8
-    };
-
+ 
     getValidMovements(board)
     {
         
