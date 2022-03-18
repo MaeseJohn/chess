@@ -28,8 +28,6 @@ class Board
     #lightColor
     #darkColor
     #squares
-    #PIECE_DIRECTION_VALUE
-
     constructor(boardSize, squaresize, lightColor, darkColor)
     {
         this.#cv = document.getElementById("canvas");
@@ -58,6 +56,19 @@ class Board
     #getIndexFromFileRank(file, rank)
     {
         return file.charCodeAt(0) - 44 + (rank - 8) * -10;
+    }
+
+    #getCoordinatesFormFileRank(name)
+    {
+        let coordinates = 
+        {
+            x: 0,
+            y: 0
+        }
+        coordinates.x = name.charCodeAt(0) - 65;
+        coordinates.y = (name.charCodeAt(1) - 56) * - 1;
+        
+        return coordinates;
     }
 
     
@@ -93,10 +104,39 @@ class Board
     
     //METHODS
 
-    #drawSquare(color, x, y, size)
+    #drawSquare(color, x, y)
     {
         this.#ctx.fillStyle = color;
-        this.#ctx.fillRect(x, y, size, size);  
+        this.#ctx.fillRect(x * this.#squaresize, y * this.#squaresize, this.#squaresize, this.#squaresize);  
+    }
+
+
+    unDrawValidMovements(validMovements)
+    {
+        validMovements.map(item => {
+            let coordinates = this.#getCoordinatesFormFileRank(item.getName());
+
+            this.#drawSquare(item.getColor(), coordinates.x, coordinates.y);
+       
+            if(!item.isEmpty())
+            {
+                this.#printPiece(item.getPiece().getSrc(), coordinates.x, coordinates.y);
+            }
+        })
+        
+    }
+    drawValidMovements(validMovements)
+    {
+        validMovements.map(item => {
+            let coordinates = this.#getCoordinatesFormFileRank(item.getName());
+
+            this.#drawSquare(GREEN, coordinates.x, coordinates.y);
+        
+            if(!item.isEmpty())
+            {
+                this.#printPiece(item.getPiece().getSrc(), coordinates.x, coordinates.y);
+            }
+        })
     }
 
     #setStartPiecesPos()
@@ -164,12 +204,12 @@ class Board
                 if(drawWhite)
                 {
                     this.#squares[tmp] = new Square(this.#lightColor, squareName);
-                    this.#drawSquare(this.#lightColor, c * this.#squaresize, r * this.#squaresize, this.#squaresize);
+                    this.#drawSquare(this.#lightColor, c, r);
                 }
                 else
                 {
                     this.#squares[tmp] = new Square(this.#darkColor, squareName);
-                    this.#drawSquare(this.#darkColor,  c * this.#squaresize, r * this.#squaresize, this.#squaresize);
+                    this.#drawSquare(this.#darkColor, c, r);
                 }
                 drawWhite = !drawWhite;
             }
