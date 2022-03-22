@@ -1,9 +1,10 @@
 class Pawn extends Piece
 {
     #PIECE_DIRECTONS;
-    constructor(color, file, rank)
+
+    constructor(color)
     {
-        super(color,"pawn", file, rank);
+        super(color,"pawn");
 
         if(color === "white")
         {
@@ -20,13 +21,25 @@ class Pawn extends Piece
         let validMovements = [];
 
         this.#PIECE_DIRECTONS.map(direction => {
+        
             let destinationSquare = board.calculatePosition(square.getName(), direction);
+
             if(direction === DIRECTION_VALUE.UP || direction === DIRECTION_VALUE.DOWN)
             {
-                console.log(destinationSquare);
                 if(destinationSquare.isEmpty())
                 {
                     validMovements.push(destinationSquare);
+                }
+
+                if(square.getRank() == 7 || square.getRank() == 2)
+                {
+                    console.log("yei");
+                    let firstMoveDestination = board.calculatePosition(destinationSquare.getName(), direction);
+    
+                    if(firstMoveDestination.isEmpty())
+                    {
+                        validMovements.push(firstMoveDestination); 
+                    }
                 }
             }
             else if(!destinationSquare.isEmpty())
@@ -36,7 +49,7 @@ class Pawn extends Piece
                     validMovements.push(destinationSquare);
                 }
             }
-        })
+        }, this)
         
         return validMovements;
     }  

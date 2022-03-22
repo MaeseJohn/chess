@@ -7,7 +7,7 @@ const GREEN = 'rgb(75,130,50,.7)';
 
 let turn = "white";
 let pieceWasClicked = false;
-let clickedPiece;
+let clickedSquare;
 let validMovements;
 
 const BOARD = new Board(BOAR_SIZE, SQUARE_SIZE, LIGHT_BROWN, DARK_BROWN);
@@ -25,38 +25,51 @@ function changeTurn()
   }
 }
 
-window.addEventListener('boardClick', evt =>
+function drawMovemets(square)
 {
-  let square = evt.detail;
-
-  if(!pieceWasClicked && !square.isEmpty())
+  if(!square.isEmpty())
   {
+    console.log("really?");
     if(square.getPiece().getColor() === turn)
     {
-      clickedPiece = square.getPiece();
-      pieceWasClicked = true;
-      validMovements = clickedPiece.getValidMovements(BOARD, square);
+      validMovements = square.getPiece().getValidMovements(BOARD, square);
       BOARD.drawValidMovements(validMovements);
+      clickedSquare = square;
+      pieceWasClicked = true;
     }
+    return true;
   }
-  else if(pieceWasClicked)
+  return false;
+}
+
+window.addEventListener('boardClick', evt =>
+{
+  let actualSquare = evt.detail;
+
+  if(!pieceWasClicked)
+  {
+    console.log("primer if");
+    drawMovemets(actualSquare);
+  }
+  else
   {
     BOARD.unDrawValidMovements(validMovements);
-    
-    if(validMovements.includes(square))
+
+    if(validMovements.includes(actualSquare))
     {
-      
+      BOARD.movePiece(clickedSquare, actualSquare);
+      console.log("tercero if");
       changeTurn();
       pieceWasClicked = false;
       validMovements  = undefined;
-      clickedPiece    = undefined;
+      clickedSquare   = undefined;
     }
-    else
+    else if(!drawMovemets(actualSquare))
     {
       pieceWasClicked = false;
       validMovements  = undefined;
-      clickedPiece    = undefined;
-    }
+      clickedSquare   = undefined;
+    }  
   }
   
   

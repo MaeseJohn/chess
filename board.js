@@ -132,19 +132,22 @@ class Board
             let coordinates = this.#getCoordinatesFormFileRank(item.getName());
             
             this.#drawSquare(GREEN, coordinates.x, coordinates.y);
-            
-            if(!item.isEmpty())
-            {
-                this.#printPiece(item.getPiece().getSrc(), coordinates.x, coordinates.y);
-            }
         })
     }
 
-    movePiece(piece, destinationsquare)
+    movePiece(actualSquare, destinationSquare)
     {
-        this.#drawSquare()
-        destinationsquare.setPiece(piece);
+        let actualCoordinates = this.#getCoordinatesFormFileRank(actualSquare.getName());
+
+        let destinationCoordinates = this.#getCoordinatesFormFileRank(destinationSquare.getName());
+
+        this.#drawSquare(actualSquare.getColor(), actualCoordinates.x, actualCoordinates.y);
+        this.#drawSquare(destinationSquare.getColor(), destinationCoordinates.x, destinationCoordinates.y);
         
+        destinationSquare.setPiece(actualSquare.getPiece());
+        actualSquare.deletePiece();
+
+        this.#printPiece(destinationSquare.getPiece().getSrc(), destinationCoordinates.x, destinationCoordinates.y);    
     }
 
      ///////////////////////
@@ -243,34 +246,30 @@ class Board
         let img = new Image();
         img.src = src;
 
-        this.#ctx.drawImage(img, x, y, this.#squaresize, this.#squaresize);
+        this.#ctx.drawImage(img, x * this.#squaresize, y * this.#squaresize, this.#squaresize, this.#squaresize);
         
         img.onload = (function()
         {
-            this.#ctx.drawImage(img, x, y, this.#squaresize, this.#squaresize);
+            this.#ctx.drawImage(img, x * this.#squaresize, y * this.#squaresize, this.#squaresize, this.#squaresize);
         }).bind(this)
         //Investigate bind
     }
 
     #printAllPieces()
     { 
-        let xCoordinate = (f, x) => (this.#squares[f + x].getName().charCodeAt(0) - 65) * 100;
-
-        let yCoordinate = (f, y) => (this.#squares[f + y].getName().charCodeAt(1) - 8) * -100;
-
         let coordinates = (f, r) => this.#getCoordinatesFormFileRank(this.#squares[f + r].getName());
       
 
         for(var i = 0; i < 8; i++)
         {
-            this.#printPiece(this.#squares[i + 21].getPiece().getSrc(), coordinates(i, 21).x * 100, coordinates(i, 21).y * 100);
-            this.#printPiece(this.#squares[i + 31].getPiece().getSrc(), coordinates(i, 31).x * 100, coordinates(i, 31).y * 100);
+            this.#printPiece(this.#squares[i + 21].getPiece().getSrc(), coordinates(i, 21).x, coordinates(i, 21).y);
+            this.#printPiece(this.#squares[i + 31].getPiece().getSrc(), coordinates(i, 31).x, coordinates(i, 31).y);
         }
     
         for(var i = 0; i < 8; i++)
         { 
-            this.#printPiece(this.#squares[i + 91].getPiece().getSrc(), coordinates(i, 91).x * 100, coordinates(i, 91).y * 100);
-            this.#printPiece(this.#squares[i + 81].getPiece().getSrc(), coordinates(i, 81).x * 100, coordinates(i, 81).y * 100);
+            this.#printPiece(this.#squares[i + 91].getPiece().getSrc(), coordinates(i, 91).x, coordinates(i, 91).y);
+            this.#printPiece(this.#squares[i + 81].getPiece().getSrc(), coordinates(i, 81).x, coordinates(i, 81).y);
         }
     }  
 
