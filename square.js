@@ -3,7 +3,7 @@ class Square
     #color;
     #name;
     #piece;
-    constructor(color, name = 'outofboard')
+    constructor(color, name = 'outOfBoard')
     {
         this.#color = color;
         this.#name  = name;
