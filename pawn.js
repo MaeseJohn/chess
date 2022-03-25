@@ -29,16 +29,14 @@ class Pawn extends Piece
                 if(destinationSquare.isEmpty())
                 {
                     validMovements.push(destinationSquare);
-                }
-
-                if(square.getRank() == 7 || square.getRank() == 2)
-                {
-                    console.log("yei");
-                    let firstMoveDestination = board.calculatePosition(destinationSquare.getName(), direction);
-    
-                    if(firstMoveDestination.isEmpty())
+                    if(square.getRank() == 7 || square.getRank() == 2)
                     {
-                        validMovements.push(firstMoveDestination); 
+                        let firstMoveDestination = board.calculatePosition(destinationSquare.getName(), direction);
+        
+                        if(firstMoveDestination.isEmpty())
+                        {
+                            validMovements.push(firstMoveDestination); 
+                        }
                     }
                 }
             }

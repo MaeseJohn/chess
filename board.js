@@ -97,7 +97,7 @@ class Board
     }
     
     
-     /////////////////////////////////
+    /////////////////////////////////
     ////////MOVEMETS METHODS/////////
    ///////////////////////////////// 
 
@@ -126,19 +126,23 @@ class Board
         })
         
     }
+
     drawValidMovements(validMovements)
     {
         validMovements.map(item => {
             let coordinates = this.#getCoordinatesFormFileRank(item.getName());
             
             this.#drawSquare(GREEN, coordinates.x, coordinates.y);
+            if(!item.isEmpty())
+            {
+                this.#printPiece(item.getPiece().getSrc(), coordinates.x, coordinates.y);
+            }
         })
     }
-
+    
     movePiece(actualSquare, destinationSquare)
     {
         let actualCoordinates = this.#getCoordinatesFormFileRank(actualSquare.getName());
-
         let destinationCoordinates = this.#getCoordinatesFormFileRank(destinationSquare.getName());
 
         this.#drawSquare(actualSquare.getColor(), actualCoordinates.x, actualCoordinates.y);
@@ -150,9 +154,9 @@ class Board
         this.#printPiece(destinationSquare.getPiece().getSrc(), destinationCoordinates.x, destinationCoordinates.y);    
     }
 
-     ///////////////////////
+    ///////////////////////
     ///////METHODS/////////
-   ///////////////////////
+    ///////////////////////
 
     #drawSquare(color, x, y)
     {
@@ -238,6 +242,8 @@ class Board
             drawWhite = !drawWhite;
         }
         this.#setStartPiecesPos();
+
+        //Async function
         this.#printAllPieces();
     }
 
@@ -245,14 +251,14 @@ class Board
     {
         let img = new Image();
         img.src = src;
-
-        this.#ctx.drawImage(img, x * this.#squaresize, y * this.#squaresize, this.#squaresize, this.#squaresize);
-        
-        img.onload = (function()
+        //Async function
+        //img.decode();
+   
+        //Async function
+        img.onload = (() =>
         {
             this.#ctx.drawImage(img, x * this.#squaresize, y * this.#squaresize, this.#squaresize, this.#squaresize);
         }).bind(this)
-        //Investigate bind
     }
 
     #printAllPieces()
@@ -283,4 +289,3 @@ class Board
  
 }
 
-    

@@ -29,11 +29,11 @@ function drawMovemets(square)
 {
   if(!square.isEmpty())
   {
-    console.log("really?");
     if(square.getPiece().getColor() === turn)
     {
       validMovements = square.getPiece().getValidMovements(BOARD, square);
       BOARD.drawValidMovements(validMovements);
+      console.log("movimientos validos pintados");
       clickedSquare = square;
       pieceWasClicked = true;
     }
@@ -42,34 +42,41 @@ function drawMovemets(square)
   return false;
 }
 
+
+
 window.addEventListener('boardClick', evt =>
 {
   let actualSquare = evt.detail;
 
   if(!pieceWasClicked)
   {
-    console.log("primer if");
     drawMovemets(actualSquare);
   }
   else
   {
-    BOARD.unDrawValidMovements(validMovements);
-
-    if(validMovements.includes(actualSquare))
+    if(actualSquare.getName() != clickedSquare.getName())
     {
-      BOARD.movePiece(clickedSquare, actualSquare);
-      console.log("tercero if");
-      changeTurn();
-      pieceWasClicked = false;
-      validMovements  = undefined;
-      clickedSquare   = undefined;
+      console.log("entro");
+      if(validMovements.includes(actualSquare))
+      {
+        BOARD.movePiece(clickedSquare, actualSquare);
+        BOARD.unDrawValidMovements(validMovements);
+        changeTurn();
+        pieceWasClicked = false;
+        validMovements  = undefined;
+        clickedSquare   = undefined;
+      }
+      else
+      {
+        BOARD.unDrawValidMovements(validMovements);
+        if(!drawMovemets(actualSquare))
+        {
+          pieceWasClicked = false;
+          validMovements  = undefined;
+          clickedSquare   = undefined;
+        }
+      }
     }
-    else if(!drawMovemets(actualSquare))
-    {
-      pieceWasClicked = false;
-      validMovements  = undefined;
-      clickedSquare   = undefined;
-    }  
   }
   
   
