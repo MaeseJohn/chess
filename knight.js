@@ -8,9 +8,25 @@ class Knight extends Piece
             DIRECTION_VALUE.DOWN_DOWN_LEFT, DIRECTION_VALUE.DOWN_DOWN_RIGHT, DIRECTION_VALUE.RIGHT_RIGHT_DOWN, DIRECTION_VALUE.RIGHT_RIGHT_UP];
     }
  
-    getValidMovements(board)
+    getValidMovements(board, square)
     {
+        let validMovements = [];
+
+        this.#PIECE_DIRECTONS.map(direction => {
         
+            let destinationSquare = board.calculatePosition(square.getName(), direction);
+
+            if(destinationSquare.getName() != 'outOfBoard' && destinationSquare.isEmpty())
+            {
+                validMovements.push(destinationSquare);
+            }
+            else if(destinationSquare.getName() != 'outOfBoard' && destinationSquare.getPiece().getColor() != this.getColor())
+            {
+                validMovements.push(destinationSquare);
+            }
+        }, this)
+        
+        return validMovements;   
     }
 
 
