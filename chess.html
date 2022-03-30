@@ -2,11 +2,28 @@
 <html >
   <head>
     <title>Tablero</title>
+    <style>
+      #canvas{
+        margin: 100px;
+        box-shadow:10px 10px 10px black;
+        border-radius: 1%;
+      }
+      *{
+        background-color: #17202A;
+      }
+    </style>
   </head>
   <body>
     <canvas id="canvas" width="800" height="800"></canvas>
     <script src="square.js"></script>
+    <script src="piece.js"></script>
+    <script src="pawn.js"></script>
+    <script src="rook.js"></script>
+    <script src="knight.js"></script>
+    <script src="bishop.js"></script>
+    <script src="king.js"></script>
+    <script src="queen.js"></script>
     <script src="board.js"></script>
-    <script src="chess.js"></script>
+    <script src="gamecontroller.js"></script>
   </body>
 </html>

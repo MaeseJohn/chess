@@ -1,0 +1,156 @@
+const SQUARE_SIZE = 100; // In pixels
+const BOAR_SIZE   = 8;  // Namber of squares in a row and column
+const PIECES_SIZE = 100; // In pixels
+const LIGHT_BROWN = "#dbb779";
+const DARK_BROWN  = "#452a1e";
+const GREEN = 'rgb(75,130,50,.7)';
+
+
+
+let turn = "white";
+let pieceWasClicked = false;
+let clickedSquare;
+let validMovements;
+
+const BOARD = new Board(BOAR_SIZE, SQUARE_SIZE, LIGHT_BROWN, DARK_BROWN);
+BOARD.initBoard();
+
+let checks = [];
+
+let whiteKing = BOARD.getSquareFromFileRank("E", "1");
+let blackKing = BOARD.getSquareFromFileRank("E", "8");
+
+function changeTurn()
+{
+  if(turn === "white")
+  {
+    turn = "black";
+  }
+  else
+  {
+    turn = "white";
+  }
+}
+
+function drawMovemets(square)
+{
+  if(!square.isEmpty())
+  {
+    if(square.getPiece().getColor() === turn)
+    {
+      validMovements = square.getPiece().getValidMovements(BOARD, square);
+      BOARD.drawValidMovements(validMovements);
+      console.log("movimientos validos pintados");
+      clickedSquare = square;
+      pieceWasClicked = true;
+    }
+    return true;
+  }
+  return false;
+}
+
+function kingInCheck()
+{
+  let king;
+  let destinationSquare;
+  let checkPoints = [];
+  let knightMovements = [DIRECTION_VALUE.UP_UP_RIGHT, DIRECTION_VALUE.UP_UP_LEFT, DIRECTION_VALUE.LEFT_LEFT_UP, DIRECTION_VALUE.LEFT_LEFT_DOWN, 
+  DIRECTION_VALUE.DOWN_DOWN_LEFT, DIRECTION_VALUE.DOWN_DOWN_RIGHT, DIRECTION_VALUE.RIGHT_RIGHT_DOWN, DIRECTION_VALUE.RIGHT_RIGHT_UP];
+
+  turn == "white" ? king = whiteKing : king = blackKing;
+
+
+  knightMovements.map(direction => {
+
+    destinationSquare = BOARD.calculatePosition(king.getName(), direction);
+
+    if(destinationSquare.getName() != 'outOfBoard' && !destinationSquare.isEmpty())
+    {
+      if(destinationSquare.getPiece().getColor() != king.getPiece().getColor() && destinationSquare.getPiece().getType() == "knight")
+      {
+        checkPoints.push(destinationSquare);
+      }
+    }
+  })
+
+  let queenMovements = [DIRECTION_VALUE.UP, DIRECTION_VALUE.LEFT, DIRECTION_VALUE.RIGHT, DIRECTION_VALUE.DOWN, 
+  DIRECTION_VALUE.UP_LEFT, DIRECTION_VALUE.UP_RIGHT, DIRECTION_VALUE.DOWN_LEFT, DIRECTION_VALUE.DOWN_RIGHT];
+
+  queenMovements.map(direction => {
+        
+    destinationSquare = BOARD.calculatePosition(king.getName(), direction);
+
+    while(destinationSquare.getName() != 'outOfBoard' && destinationSquare.isEmpty())
+    {
+      destinationSquare = BOARD.calculatePosition(destinationSquare.getName(), direction);   
+    }
+  
+    if(destinationSquare.getName() != 'outOfBoard' && destinationSquare.getPiece().getColor() != king.getPiece().getColor())
+    {
+      console.log(destinationSquare);
+      let posibleCheck = false;
+      let posibleCheckPieceMovements = destinationSquare.getPiece().getValidMovements(BOARD, destinationSquare);
+
+      posibleCheck = posibleCheckPieceMovements.find(element => {
+        return element === king;
+      })
+        
+      if(posibleCheck)
+      {
+        checkPoints.push(destinationSquare);
+      } 
+      
+    }
+  })
+
+  return checkPoints;
+}
+
+
+window.addEventListener('boardClick', evt =>
+{
+  let actualSquare = evt.detail;
+  console.log(actualSquare.getCoordinatesFromName());
+
+  if(!pieceWasClicked)
+  {
+    drawMovemets(actualSquare);
+  }
+  else
+  {
+    if(actualSquare.getName() != clickedSquare.getName())
+    {
+      console.log("entro");
+      if(validMovements.includes(actualSquare))
+      {
+        BOARD.movePiece(clickedSquare, actualSquare);
+        BOARD.unDrawValidMovements(validMovements);
+        changeTurn();
+        checks = kingInCheck();
+        pieceWasClicked = false;
+        validMovements  = undefined;
+        clickedSquare   = undefined;
+      }
+      else
+      {
+        BOARD.unDrawValidMovements(validMovements);
+        if(!drawMovemets(actualSquare))
+        {
+          pieceWasClicked = false;
+          validMovements  = undefined;
+          clickedSquare   = undefined;
+        }
+      }
+    }
+  }
+  
+  
+})
+
+
+
+
+
+
+
+
