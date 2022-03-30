@@ -16,23 +16,30 @@ class Pawn extends Piece
         }
     }
 
+    getPieceDirections()
+    {
+        return this.#PIECE_DIRECTONS;
+    }
+
     getValidMovements(board, square)
     {
         let validMovements = [];
+        let pieceDirections = super.anchoredByCheck(board, square, this.#PIECE_DIRECTONS);
 
-        this.#PIECE_DIRECTONS.map(direction => {
+        pieceDirections.map(direction => {
         
             let destinationSquare = board.calculatePosition(square.getName(), direction);
-
+            
             if(direction === DIRECTION_VALUE.UP || direction === DIRECTION_VALUE.DOWN)
             {
                 if(destinationSquare.isEmpty())
                 {
                     validMovements.push(destinationSquare);
+
                     if(square.getRank() == 7 || square.getRank() == 2)
                     {
                         let firstMoveDestination = board.calculatePosition(destinationSquare.getName(), direction);
-        
+    
                         if(firstMoveDestination.isEmpty())
                         {
                             validMovements.push(firstMoveDestination); 

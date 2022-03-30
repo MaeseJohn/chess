@@ -1,23 +1,22 @@
 const DIRECTION_VALUE =
 {
-    UP:-10,
-    UP_LEFT:-11,
-    UP_RIGHT:-9,
-    UP_UP_RIGHT:-19,
-    UP_UP_LEFT:-21,
-    LEFT:-1,
-    LEFT_LEFT_UP:-12,
-    LEFT_LEFT_DOWN:8, 
     RIGHT:1,
-    RIGHT_RIGHT_DOWN:12, 
-    RIGHT_RIGHT_UP:-8,
-    DOWN:10,
+    LEFT_LEFT_DOWN:8, 
     DOWN_LEFT:9,
+    DOWN:10,
     DOWN_RIGHT:11,
+    RIGHT_RIGHT_DOWN:12, 
     DOWN_DOWN_LEFT:19,
     DOWN_DOWN_RIGHT:21,
+    UP_UP_LEFT:-21,
+    UP_UP_RIGHT:-19,
+    LEFT_LEFT_UP:-12,
+    UP_LEFT:-11,
+    UP:-10,
+    UP_RIGHT:-9,
+    RIGHT_RIGHT_UP:-8,
+    LEFT:-1,
 };
-
 
 class Board
 {
@@ -40,29 +39,10 @@ class Board
 
         this.#cv.addEventListener("mousedown", this.#boardClickEvent.bind(this))
     }
-
-
-    #getIndexFromSquareName(name)
-    {
-        return (name.charCodeAt(0) - 44 + (name.charCodeAt(1) - 56) * - 10);
-    }
     
     #getIndexFromFileRank(file, rank)
     {
         return file.charCodeAt(0) - 44 + (rank - 8) * -10;
-    }
-
-    #getCoordinatesFormFileRank(name)
-    {
-        let coordinates = 
-        {
-            x: 0,
-            y: 0
-        }
-        coordinates.x = name.charCodeAt(0) - 65;
-        coordinates.y = (name.charCodeAt(1) - 56) * - 1;
-        
-        return coordinates;
     }
 
     
@@ -74,6 +54,12 @@ class Board
         {
             return this.#squares[squareIndex].getPiece();
         }
+    }
+    
+    getSquareFromFileRank(file, rank)
+    {
+        let squareIndex = this.#getIndexFromFileRank(file, rank)
+        return this.#squares[squareIndex];    
     }
     
     getSquare(x, y)
@@ -115,7 +101,7 @@ class Board
     unDrawValidMovements(validMovements)
     {
         validMovements.map(item => {
-            let coordinates = this.#getCoordinatesFormFileRank(item.getName());
+            let coordinates = item.getCoordinatesFromName();
             
             this.#drawSquare(item.getColor(), coordinates.x, coordinates.y);
             
@@ -130,7 +116,7 @@ class Board
     drawValidMovements(validMovements)
     {
         validMovements.map(item => {
-            let coordinates = this.#getCoordinatesFormFileRank(item.getName());
+            let coordinates = item.getCoordinatesFromName();
             
             this.#drawSquare(GREEN, coordinates.x, coordinates.y);
             if(!item.isEmpty())
@@ -142,8 +128,8 @@ class Board
     
     movePiece(actualSquare, destinationSquare)
     {
-        let actualCoordinates = this.#getCoordinatesFormFileRank(actualSquare.getName());
-        let destinationCoordinates = this.#getCoordinatesFormFileRank(destinationSquare.getName());
+        let actualCoordinates = actualSquare.getCoordinatesFromName();
+        let destinationCoordinates = destinationSquare.getCoordinatesFromName();
 
         this.#drawSquare(actualSquare.getColor(), actualCoordinates.x, actualCoordinates.y);
         this.#drawSquare(destinationSquare.getColor(), destinationCoordinates.x, destinationCoordinates.y);
@@ -151,7 +137,19 @@ class Board
         destinationSquare.setPiece(actualSquare.getPiece());
         actualSquare.deletePiece();
 
-        this.#printPiece(destinationSquare.getPiece().getSrc(), destinationCoordinates.x, destinationCoordinates.y);    
+        this.#printPiece(destinationSquare.getPiece().getSrc(), destinationCoordinates.x, destinationCoordinates.y);
+        
+        if(destinationSquare.getPiece().getType() == "king")
+        {
+            if(destinationSquare.getPiece().getColor() == "white")
+            {
+                whiteKing = destinationSquare;
+            }
+            else 
+            {
+                blackKing = destinationSquare;
+            }
+        }
     }
 
     ///////////////////////
@@ -182,10 +180,10 @@ class Board
             this.setPiece("C", y, bishopC);
 
             let king = new King(color);
-            this.setPiece("D", y, king);
+            this.setPiece("E", y, king);
 
             let queen = new Queen(color);
-            this.setPiece("E", y, queen);
+            this.setPiece("D", y, queen);
 
             let bishopF = new Bishop(color);
             this.setPiece("F", y, bishopF);
@@ -263,7 +261,7 @@ class Board
 
     #printAllPieces()
     { 
-        let coordinates = (f, r) => this.#getCoordinatesFormFileRank(this.#squares[f + r].getName());
+        let coordinates = (f, r) => this.#squares[f + r].getCoordinatesFromName();
       
 
         for(var i = 0; i < 8; i++)
@@ -281,7 +279,7 @@ class Board
 
     calculatePosition(squareName, direction)
     {
-        let squareIndex = this.#getIndexFromSquareName(squareName);
+        let squareIndex = this.#getIndexFromFileRank(squareName.charAt(0), squareName.charAt(1));
         let destinationSquareIndex = squareIndex + direction;
 
         return this.#squares[destinationSquareIndex];

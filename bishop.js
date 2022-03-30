@@ -7,11 +7,17 @@ class Bishop extends Piece
         this.#PIECE_DIRECTONS = [DIRECTION_VALUE.UP_LEFT, DIRECTION_VALUE.UP_RIGHT, DIRECTION_VALUE.DOWN_LEFT, DIRECTION_VALUE.DOWN_RIGHT];
     }
 
+    getPieceDirections()
+    {
+        return this.#PIECE_DIRECTONS;
+    }
+
     getValidMovements(board, square)
     {
         let validMovements = [];
+        let pieceDirections = super.anchoredByCheck(board, square, this.#PIECE_DIRECTONS);
 
-        this.#PIECE_DIRECTONS.map(direction => {
+        pieceDirections.map(direction => {
         
             let destinationSquare = board.calculatePosition(square.getName(), direction);
 

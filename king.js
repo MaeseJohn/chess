@@ -8,6 +8,11 @@ class King extends Piece
             DIRECTION_VALUE.UP_LEFT, DIRECTION_VALUE.UP_RIGHT, DIRECTION_VALUE.DOWN_LEFT, DIRECTION_VALUE.DOWN_RIGHT];
     }
 
+    getPieceDirections()
+    {
+        return this.#PIECE_DIRECTONS;
+    }
+
 
     getValidMovements(board, square)
     {

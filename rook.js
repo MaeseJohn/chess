@@ -8,11 +8,17 @@ class Rook extends Piece
     }
 
 
+    getPieceDirections()
+    {
+        return this.#PIECE_DIRECTONS;
+    }
+
     getValidMovements(board, square)
     {
         let validMovements = [];
+        let pieceDirections = super.anchoredByCheck(board, square, this.#PIECE_DIRECTONS);
 
-        this.#PIECE_DIRECTONS.map(direction => {
+        pieceDirections.map(direction => {
         
             let destinationSquare = board.calculatePosition(square.getName(), direction);
 

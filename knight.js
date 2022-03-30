@@ -7,12 +7,18 @@ class Knight extends Piece
         this.#PIECE_DIRECTONS = [DIRECTION_VALUE.UP_UP_RIGHT, DIRECTION_VALUE.UP_UP_LEFT, DIRECTION_VALUE.LEFT_LEFT_UP, DIRECTION_VALUE.LEFT_LEFT_DOWN, 
             DIRECTION_VALUE.DOWN_DOWN_LEFT, DIRECTION_VALUE.DOWN_DOWN_RIGHT, DIRECTION_VALUE.RIGHT_RIGHT_DOWN, DIRECTION_VALUE.RIGHT_RIGHT_UP];
     }
+
+    getPieceDirections()
+    {
+        return this.#PIECE_DIRECTONS;
+    }
  
     getValidMovements(board, square)
     {
         let validMovements = [];
+        let pieceDirections = super.anchoredByCheck(board, square, this.#PIECE_DIRECTONS);
 
-        this.#PIECE_DIRECTONS.map(direction => {
+        pieceDirections.map(direction => {
         
             let destinationSquare = board.calculatePosition(square.getName(), direction);
 

@@ -9,6 +9,18 @@ class Square
         this.#name  = name;
     }
 
+    getCoordinatesFromName()
+    {
+        let coordinates = 
+        {
+            x: 0,
+            y: 0
+        }
+        coordinates.x = this.#name.charCodeAt(0) - 65;
+        coordinates.y = (this.#name.charCodeAt(1) - 56) * - 1;
+        
+        return coordinates;
+    }
 
     deletePiece()
     {
