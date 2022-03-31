@@ -23,13 +23,23 @@ class King extends Piece
             let destinationSquare = board.calculatePosition(square.getName(), direction);
 
             if(destinationSquare.getName() != 'outOfBoard' && destinationSquare.isEmpty())
-            {
-                validMovements.push(destinationSquare);
+            {   console.log(direction);
+                console.log(kingInCheck(destinationSquare).length)
+                console.log("sqljkdfj");
+                if(kingInCheck(destinationSquare).length == 0)
+                {
+                    console.log("vamos");
+                    validMovements.push(destinationSquare);
+                }
             }
             else if(destinationSquare.getName() != 'outOfBoard' && destinationSquare.getPiece().getColor() != this.getColor())
             {
-                validMovements.push(destinationSquare);   
+                if(kingInCheck(destinationSquare).length == 0)
+                {
+                    validMovements.push(destinationSquare);
+                }  
             }
+
         }, this)
         
         return validMovements; 

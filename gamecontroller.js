@@ -22,14 +22,7 @@ let blackKing = BOARD.getSquareFromFileRank("E", "8");
 
 function changeTurn()
 {
-  if(turn === "white")
-  {
-    turn = "black";
-  }
-  else
-  {
-    turn = "white";
-  }
+  turn === "white" ? turn = "black" : turn = "white";
 }
 
 function drawMovemets(square)
@@ -49,24 +42,21 @@ function drawMovemets(square)
   return false;
 }
 
-function kingInCheck()
+function kingInCheck(king)
 {
-  let king;
+
   let destinationSquare;
   let checkPoints = [];
   let knightMovements = [DIRECTION_VALUE.UP_UP_RIGHT, DIRECTION_VALUE.UP_UP_LEFT, DIRECTION_VALUE.LEFT_LEFT_UP, DIRECTION_VALUE.LEFT_LEFT_DOWN, 
   DIRECTION_VALUE.DOWN_DOWN_LEFT, DIRECTION_VALUE.DOWN_DOWN_RIGHT, DIRECTION_VALUE.RIGHT_RIGHT_DOWN, DIRECTION_VALUE.RIGHT_RIGHT_UP];
-
-  turn == "white" ? king = whiteKing : king = blackKing;
-
-
+ 
   knightMovements.map(direction => {
 
     destinationSquare = BOARD.calculatePosition(king.getName(), direction);
 
     if(destinationSquare.getName() != 'outOfBoard' && !destinationSquare.isEmpty())
     {
-      if(destinationSquare.getPiece().getColor() != king.getPiece().getColor() && destinationSquare.getPiece().getType() == "knight")
+      if(destinationSquare.getPiece().getColor() != turn && destinationSquare.getPiece().getType() == "knight")
       {
         checkPoints.push(destinationSquare);
       }
@@ -85,8 +75,10 @@ function kingInCheck()
       destinationSquare = BOARD.calculatePosition(destinationSquare.getName(), direction);   
     }
   
-    if(destinationSquare.getName() != 'outOfBoard' && destinationSquare.getPiece().getColor() != king.getPiece().getColor())
+    if(destinationSquare.getName() != 'outOfBoard' && destinationSquare.getPiece().getColor() != turn)
     {
+      console.log(direction);
+      console.log("no debes de entrar por el peon")
       console.log(destinationSquare);
       let posibleCheck = false;
       let posibleCheckPieceMovements = destinationSquare.getPiece().getValidMovements(BOARD, destinationSquare);
@@ -97,6 +89,7 @@ function kingInCheck()
         
       if(posibleCheck)
       {
+        console.log("dudo");
         checkPoints.push(destinationSquare);
       } 
       
@@ -110,7 +103,6 @@ function kingInCheck()
 window.addEventListener('boardClick', evt =>
 {
   let actualSquare = evt.detail;
-  console.log(actualSquare.getCoordinatesFromName());
 
   if(!pieceWasClicked)
   {
@@ -126,7 +118,12 @@ window.addEventListener('boardClick', evt =>
         BOARD.movePiece(clickedSquare, actualSquare);
         BOARD.unDrawValidMovements(validMovements);
         changeTurn();
-        checks = kingInCheck();
+        
+        let king;
+        turn == "white" ? king = whiteKing : king = blackKing;
+        checks = kingInCheck(king);
+        console.log(checks);
+
         pieceWasClicked = false;
         validMovements  = undefined;
         clickedSquare   = undefined;
@@ -143,8 +140,6 @@ window.addEventListener('boardClick', evt =>
       }
     }
   }
-  
-  
 })
 
 

@@ -56,6 +56,6 @@ class Pawn extends Piece
             }
         }, this)
         
-        return validMovements;
+        return super.allChecks(board, validMovements);
     }  
 }
