@@ -48,55 +48,32 @@ class Piece
 
        if(kingPieceDirection != undefined)
        {
-           console.log("1");
            let destinationSquare = board.calculatePosition(king.getName(), kingPieceDirection);
-           console.log(destinationSquare);
 
            while(destinationSquare.getName() != 'outOfBoard' && (destinationSquare.isEmpty() || destinationSquare.getPiece() == square.getPiece()))
            {
-               console.log("2")
                destinationSquare = board.calculatePosition(destinationSquare.getName(), kingPieceDirection);
            }
            
            if(destinationSquare.getName() != 'outOfBoard')
            {
-               console.log("3");
                 if(destinationSquare.getPiece().getColor() != king.getPiece().getColor() && destinationSquare.getPiece().getType() != "pawn" && destinationSquare.getPiece().getType() != "king")
                 {
-                    console.log("4");
                     pieceDirections = destinationSquare.getPiece().getPieceDirections();
-                    console.log(pieceDirections);
                     pieceDirections = pieceDirections.filter(item  => {
                         return Math.abs(item) == Math.abs(kingPieceDirection);
                     })
-                    console.log(pieceDirections);
                     
                     if(pieceDirections.length > 0)
                     {
                         pieceDirections = pieceDirections.filter(item => { 
                             return pieceMovements.indexOf(item) !== -1;
                         })
-
-                        console.log("5");
-
-                        //This piece of code have problems
-                        //I think when u compare 2 array u compare the same elemet a lot of times
-                        //So if u see that this element is true 1 time but false 2 time
-                        //This element dont enter in the new array I'm not totali sure
-                        //REMEBER SEAR SOME INFORMATION ABOUT THIS
-                       /*pieceDirections.filter(item => {
-                            pieceDirections = pieceMovements.filter(move => {
-                                console.log(item, move);
-                                return move == item;
-                            })
-                        })*/
-                        console.log(pieceDirections);
                         return pieceDirections;
                     }
                 }
             }
        }
-       console.log("6");
        return pieceMovements;
     }
 
@@ -108,13 +85,9 @@ class Piece
 
         while(destinationSquare.isEmpty())
         {
-            console.log("equisde");
             destinationSquare = board.calculatePosition(destinationSquare.getName(), direction);
             blockSquares.push(destinationSquare);
         }
-
-        console.log("mirar aqui")
-        console.log(blockSquares);
         return blockSquares;
     }
 
@@ -129,16 +102,12 @@ class Piece
         {
             if(checks.length == 1)
             {
-                console.log("entre");
                 let kingPieceDirection = this.#kingPieceDirection(checks[0], king);
                 blockSquares = this.#lineMovementsBetwenKingPiece(board, king, kingPieceDirection);
 
-                console.log(blockSquares);
-                console.log(pieceMovements);
                 blockSquares = blockSquares.filter(square => {
                     return pieceMovements.indexOf(square) !== -1;
                 })
-                console.log(blockSquares);
                 return blockSquares;
             }
             else if (checks.length > 1)

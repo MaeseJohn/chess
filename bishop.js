@@ -26,7 +26,6 @@ class Bishop extends Piece
                 validMovements.push(destinationSquare);
                 destinationSquare = board.calculatePosition(destinationSquare.getName(), direction);   
             }
-           console.log(destinationSquare);
             if(destinationSquare.getName() != 'outOfBoard' && destinationSquare.getPiece().getColor() != this.getColor())
             {
                 validMovements.push(destinationSquare);

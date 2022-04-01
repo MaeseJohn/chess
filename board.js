@@ -67,6 +67,10 @@ class Board
         return this.#squares[x + 21 + y * 10];
     }
     
+    getSquaresArray()
+    {
+        return this.#squares;
+    }
     getBoard()
     {
         return this.#squares;

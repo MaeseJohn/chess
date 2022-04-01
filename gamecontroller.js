@@ -33,7 +33,6 @@ function drawMovemets(square)
     {
       validMovements = square.getPiece().getValidMovements(BOARD, square);
       BOARD.drawValidMovements(validMovements);
-      console.log("movimientos validos pintados");
       clickedSquare = square;
       pieceWasClicked = true;
     }
@@ -77,9 +76,6 @@ function kingInCheck(king)
   
     if(destinationSquare.getName() != 'outOfBoard' && destinationSquare.getPiece().getColor() != turn)
     {
-      console.log(direction);
-      console.log("no debes de entrar por el peon")
-      console.log(destinationSquare);
       let posibleCheck = false;
       let posibleCheckPieceMovements = destinationSquare.getPiece().getValidMovements(BOARD, destinationSquare);
 
@@ -89,7 +85,6 @@ function kingInCheck(king)
         
       if(posibleCheck)
       {
-        console.log("dudo");
         checkPoints.push(destinationSquare);
       } 
       
@@ -99,6 +94,25 @@ function kingInCheck(king)
   return checkPoints;
 }
 
+function checkMate()
+{
+
+  if(checks.length > 0)
+  {
+    let board = BOARD.getSquaresArray()
+    board.map(square => {
+      if(square.getName() != 'outOfBoard' && !square.isEmpty())
+      {
+        if(square.getPiece().getColor() == turn && square.getPiece().getValidMovements(BOARD, square).length > 0)
+        {
+          return false;
+        }
+      }
+    })
+    return true;
+  }
+  return false;
+}
 
 window.addEventListener('boardClick', evt =>
 {
@@ -112,18 +126,21 @@ window.addEventListener('boardClick', evt =>
   {
     if(actualSquare.getName() != clickedSquare.getName())
     {
-      console.log("entro");
       if(validMovements.includes(actualSquare))
       {
         BOARD.movePiece(clickedSquare, actualSquare);
         BOARD.unDrawValidMovements(validMovements);
         changeTurn();
-        
+
         let king;
         turn == "white" ? king = whiteKing : king = blackKing;
         checks = kingInCheck(king);
-        console.log(checks);
+        
+        if(checkMate())
+        {
+          console.log("Jaque Mate NENE")
 
+        }
         pieceWasClicked = false;
         validMovements  = undefined;
         clickedSquare   = undefined;
