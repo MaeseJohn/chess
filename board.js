@@ -37,7 +37,7 @@ class Board
         this.#darkColor = darkColor;
         this.#squares = new Array(120);
 
-        this.#cv.addEventListener("mousedown", this.#boardClickEvent.bind(this))
+        this.#cv.addEventListener("click", this.#boardClickEvent.bind(this))
     }
     
     #getIndexFromFileRank(file, rank)
@@ -130,16 +130,16 @@ class Board
         })
     }
     
-    movePiece(actualSquare, destinationSquare)
+    movePiece(pieceSquare, destinationSquare)
     {
-        let actualCoordinates = actualSquare.getCoordinatesFromName();
+        let actualCoordinates = pieceSquare.getCoordinatesFromName();
         let destinationCoordinates = destinationSquare.getCoordinatesFromName();
 
-        this.#drawSquare(actualSquare.getColor(), actualCoordinates.x, actualCoordinates.y);
+        this.#drawSquare(pieceSquare.getColor(), actualCoordinates.x, actualCoordinates.y);
         this.#drawSquare(destinationSquare.getColor(), destinationCoordinates.x, destinationCoordinates.y);
         
-        destinationSquare.setPiece(actualSquare.getPiece());
-        actualSquare.deletePiece();
+        destinationSquare.setPiece(pieceSquare.getPiece());
+        pieceSquare.deletePiece();
 
         this.#printPiece(destinationSquare.getPiece().getSrc(), destinationCoordinates.x, destinationCoordinates.y);
         

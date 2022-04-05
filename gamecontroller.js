@@ -5,10 +5,15 @@ const LIGHT_BROWN = "#dbb779";
 const DARK_BROWN  = "#452a1e";
 const GREEN = 'rgb(75,130,50,.7)';
 
-
+const PROMOTION = document.getElementById("modal");
+const ROOK_PROMOTION_IMG = document.getElementById("rookimg");
+const KNIGHT_PROMOTION_IMG = document.getElementById("knightimg");
+const BISHOP_PROMOTION_IMG = document.getElementById("bishopimg");
+const QUEEN_PROMOTION_IMG = document.getElementById("queenimg");
 
 let turn = "white";
 let pieceWasClicked = false;
+let actualSquare;
 let clickedSquare;
 let validMovements;
 
@@ -25,15 +30,15 @@ function changeTurn()
   turn === "white" ? turn = "black" : turn = "white";
 }
 
-function drawMovemets(square)
+function drawMovemets()
 {
-  if(!square.isEmpty())
+  if(!actualSquare.isEmpty())
   {
-    if(square.getPiece().getColor() === turn)
+    if(actualSquare.getPiece().getColor() === turn)
     {
-      validMovements = square.getPiece().getValidMovements(BOARD, square);
+      validMovements = actualSquare.getPiece().getValidMovements(BOARD, actualSquare);
       BOARD.drawValidMovements(validMovements);
-      clickedSquare = square;
+      clickedSquare = actualSquare;
       pieceWasClicked = true;
     }
     return true;
@@ -43,7 +48,6 @@ function drawMovemets(square)
 
 function kingInCheck(king)
 {
-
   let destinationSquare;
   let checkPoints = [];
   let knightMovements = [DIRECTION_VALUE.UP_UP_RIGHT, DIRECTION_VALUE.UP_UP_LEFT, DIRECTION_VALUE.LEFT_LEFT_UP, DIRECTION_VALUE.LEFT_LEFT_DOWN, 
@@ -68,10 +72,12 @@ function kingInCheck(king)
   queenMovements.map(direction => {
         
     destinationSquare = BOARD.calculatePosition(king.getName(), direction);
+    console.log(destinationSquare);
 
     while(destinationSquare.getName() != 'outOfBoard' && destinationSquare.isEmpty())
     {
       destinationSquare = BOARD.calculatePosition(destinationSquare.getName(), direction);   
+      console.log(destinationSquare);
     }
   
     if(destinationSquare.getName() != 'outOfBoard' && destinationSquare.getPiece().getColor() != turn)
@@ -87,7 +93,6 @@ function kingInCheck(king)
       {
         checkPoints.push(destinationSquare);
       } 
-      
     }
   })
 
@@ -96,7 +101,7 @@ function kingInCheck(king)
 
 function checkMate()
 {
-
+  
   if(checks.length > 0)
   {
     let board = BOARD.getSquaresArray()
@@ -105,28 +110,129 @@ function checkMate()
       {
         if(square.getPiece().getColor() == turn && square.getPiece().getValidMovements(BOARD, square).length > 0)
         {
-          return false;
+          return square;
         }
       }
     })
+    return board.length = 0;
+  }
+  return false;
+}
+
+function promotion()
+{ 
+  if(clickedSquare.getPiece().getType() != "pawn")
+  {
+    return false;
+  }
+
+  if(actualSquare.getRank() == 8 || actualSquare.getRank() == 1)
+  {
+    ROOK_PROMOTION_IMG.src = "pieces/" + turn + "/" + turn + "-rook.png"
+    KNIGHT_PROMOTION_IMG.src = "pieces/" + turn + "/" + turn + "-knight.png"
+    BISHOP_PROMOTION_IMG.src = "pieces/" + turn + "/" + turn + "-bishop.png"
+    QUEEN_PROMOTION_IMG.src = "pieces/" + turn + "/" + turn + "-queen.png"
+
+    PROMOTION.style.display = "block";
     return true;
   }
   return false;
 }
 
+PROMOTION.addEventListener('click', promotionEvent);
+
+function promotionEvent(evt)
+{
+  let rect = PROMOTION.getBoundingClientRect()
+  let x = evt.clientX - rect.left;
+  let y = evt.clientY - rect.top;
+
+  let choice;
+  
+  if(x > 200 && x < 350 && y > 425 && y < 575)
+  {
+    choice = "rook";
+  }
+  if(x > 350 && x < 500 && y > 425 && y < 575)
+  {
+    choice = "knight";
+  }
+  if(x > 500 && x < 650 && y > 425 && y < 575)
+  {
+    choice = "bishop";
+  }
+  if(x > 650 && x < 800 && y > 425 && y < 575)
+  {
+    choice = "queen";
+  }
+  
+  window.dispatchEvent(new CustomEvent('PromotionChoice', { detail: choice }));
+}
+
+window.addEventListener('PromotionChoice', evt =>
+{
+  let piece;
+  if(evt.detail != null)
+  {
+    switch(evt.detail)
+    {
+      case "rook":
+        piece = new Rook(turn);
+        break;
+
+      case "knight":
+        piece = new Knight(turn);
+        break;
+
+      case "bishop":
+        piece = new Bishop(turn);
+        break;
+
+      case "queen":
+        piece = new Queen(turn);
+        break;
+      
+      default:
+        console.log("Default switch case");
+        break;
+    }
+    console.log("sd")
+    clickedSquare.setPiece(piece);
+    BOARD.movePiece(clickedSquare, actualSquare);
+    changeTurn();
+
+    let king;
+    turn == "white" ? king = whiteKing : king = blackKing;
+    checks = kingInCheck(king);
+    
+    if(checkMate())
+    {
+      console.log("Jaque Mate 2")
+    }
+  }
+
+  PROMOTION.style.display = "none";
+  BOARD.unDrawValidMovements(validMovements);
+  pieceWasClicked = false;
+  validMovements  = undefined;
+  clickedSquare   = undefined;
+
+  console.log(evt.detail);
+})
+
 window.addEventListener('boardClick', evt =>
 {
-  let actualSquare = evt.detail;
+  actualSquare = evt.detail;
 
   if(!pieceWasClicked)
   {
-    drawMovemets(actualSquare);
+    drawMovemets();
   }
-  else
+  else if(actualSquare.getName() != clickedSquare.getName())
   {
-    if(actualSquare.getName() != clickedSquare.getName())
+    if(validMovements.includes(actualSquare))
     {
-      if(validMovements.includes(actualSquare))
+      if(!promotion())
       {
         BOARD.movePiece(clickedSquare, actualSquare);
         BOARD.unDrawValidMovements(validMovements);
@@ -138,22 +244,22 @@ window.addEventListener('boardClick', evt =>
         
         if(checkMate())
         {
-          console.log("Jaque Mate NENE")
-
+          console.log("Jaque Mate1")
         }
+
         pieceWasClicked = false;
         validMovements  = undefined;
         clickedSquare   = undefined;
-      }
-      else
+      }  
+    }
+    else
+    {
+      BOARD.unDrawValidMovements(validMovements);
+      if(!drawMovemets())
       {
-        BOARD.unDrawValidMovements(validMovements);
-        if(!drawMovemets(actualSquare))
-        {
-          pieceWasClicked = false;
-          validMovements  = undefined;
-          clickedSquare   = undefined;
-        }
+        pieceWasClicked = false;
+        validMovements  = undefined;
+        clickedSquare   = undefined;
       }
     }
   }

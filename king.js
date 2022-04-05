@@ -21,6 +21,7 @@ class King extends Piece
         this.#PIECE_DIRECTONS.map(direction => {
         
             let destinationSquare = board.calculatePosition(square.getName(), direction);
+            
 
             if(destinationSquare.getName() != 'outOfBoard' && destinationSquare.isEmpty())
             {  
@@ -31,14 +32,19 @@ class King extends Piece
             }
             else if(destinationSquare.getName() != 'outOfBoard' && destinationSquare.getPiece().getColor() != this.getColor())
             {
+                let tmp = destinationSquare.getPiece()
+                destinationSquare.setPiece(square.getPiece());
                 if(kingInCheck(destinationSquare).length == 0)
                 {
+                    console.log("que pasa aqui");
                     validMovements.push(destinationSquare);
                 }  
+                destinationSquare.setPiece(tmp);
             }
 
         }, this)
         
+        console.log(validMovements);
         return validMovements; 
     }
 
