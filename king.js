@@ -12,7 +12,91 @@ class King extends Piece
     {
         return this.#PIECE_DIRECTONS;
     }
+    
+    #castling(board, square, validMovements)
+    {
+        let tmp;
+        let destinationSquare;
+        let castlingMovements = [];
+        if(this.getColor() == "white")
+        {
+            if(whiteCastling.king)
+            {
+                if(whiteCastling.queenRook)
+                {
+                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.LEFT)
+                    tmp = validMovements.find(item => item == destinationSquare);
+                    if(tmp != undefined)
+                    {
+                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.LEFT)
+                        if(kingInCheck(destinationSquare).length == 0)
+                        {
+                            castlingMovements.push(destinationSquare);
+                        }
+                    }
 
+                }
+
+                if(whiteCastling.kingRook)
+                {
+
+                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.RIGHT)
+                    tmp = validMovements.find(item => item == destinationSquare);
+                    if(tmp != undefined)
+                    {
+                        console.log("y aqui?")
+                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.RIGHT)
+                        if(kingInCheck(destinationSquare).length == 0)
+                        {
+                            console.log("dentro")
+                            castlingMovements.push(destinationSquare);
+                        }
+                    }
+
+                }
+            }
+        }
+
+        if(this.getColor() == "black")
+        {
+            if(blackCastling.king)
+            {
+                if(blackCastling.queenRook)
+                {
+                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.LEFT)
+                    tmp = validMovements.find(item => item == destinationSquare);
+                    if(tmp != undefined)
+                    {
+                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.LEFT)
+                        if(kingInCheck(destinationSquare).length == 0)
+                        {
+                            castlingMovements.push(destinationSquare);
+                        }
+                    }
+                }
+
+                if(blackCastling.kingRook)
+                {
+
+                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.RIGHT)
+                    tmp = validMovements.find(item => item == destinationSquare);
+                    if(tmp != undefined)
+                    {
+                        console.log("y aqui?")
+                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.RIGHT)
+                        if(kingInCheck(destinationSquare).length == 0)
+                        {
+                            console.log("dentro")
+                            castlingMovements.push(destinationSquare);
+                        }
+                    }
+                }
+            }
+        }
+
+        return castlingMovements;
+        
+    }
 
     getValidMovements(board, square)
     {
@@ -36,16 +120,15 @@ class King extends Piece
                 destinationSquare.setPiece(square.getPiece());
                 if(kingInCheck(destinationSquare).length == 0)
                 {
-                    console.log("que pasa aqui");
                     validMovements.push(destinationSquare);
                 }  
                 destinationSquare.setPiece(tmp);
             }
 
         }, this)
-        
-        console.log(validMovements);
-        return validMovements; 
+        let asdf = this.#castling(board, square, validMovements).concat(validMovements); 
+        console.log(asdf)
+        return asdf; 
     }
 
 

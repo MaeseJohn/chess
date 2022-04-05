@@ -25,6 +25,18 @@ let checks = [];
 let whiteKing = BOARD.getSquareFromFileRank("E", "1");
 let blackKing = BOARD.getSquareFromFileRank("E", "8");
 
+let whiteCastling = {
+  king: true,
+  queenRook: true,
+  kingRook: true,
+}
+
+let blackCastling = {
+  king: true,
+  queenRook: true,
+  kingRook: true,
+}
+
 function changeTurn()
 {
   turn === "white" ? turn = "black" : turn = "white";
@@ -72,12 +84,10 @@ function kingInCheck(king)
   queenMovements.map(direction => {
         
     destinationSquare = BOARD.calculatePosition(king.getName(), direction);
-    console.log(destinationSquare);
 
     while(destinationSquare.getName() != 'outOfBoard' && destinationSquare.isEmpty())
     {
       destinationSquare = BOARD.calculatePosition(destinationSquare.getName(), direction);   
-      console.log(destinationSquare);
     }
   
     if(destinationSquare.getName() != 'outOfBoard' && destinationSquare.getPiece().getColor() != turn)
@@ -101,20 +111,22 @@ function kingInCheck(king)
 
 function checkMate()
 {
-  
   if(checks.length > 0)
   {
     let board = BOARD.getSquaresArray()
     board.map(square => {
+      console.log(square);
       if(square.getName() != 'outOfBoard' && !square.isEmpty())
       {
+        console.log("aquidentrito")
         if(square.getPiece().getColor() == turn && square.getPiece().getValidMovements(BOARD, square).length > 0)
         {
+          console.log("vamos a ver que pasa ahor amacho")
           return square;
         }
       }
     })
-    return board.length = 0;
+    return board.length == 0;
   }
   return false;
 }
@@ -223,6 +235,7 @@ window.addEventListener('PromotionChoice', evt =>
 window.addEventListener('boardClick', evt =>
 {
   actualSquare = evt.detail;
+  console.log(actualSquare);
 
   if(!pieceWasClicked)
   {
@@ -234,7 +247,14 @@ window.addEventListener('boardClick', evt =>
     {
       if(!promotion())
       {
-        BOARD.movePiece(clickedSquare, actualSquare);
+        if(Math.abs(clickedSquare.getFile().charCodeAt(0) - actualSquare.getFile().charCodeAt(0)) == 2 && clickedSquare.getPiece().getType() == "king")
+        {
+          BOARD.castlingMove(clickedSquare, actualSquare);
+        }
+        else
+        {
+          BOARD.movePiece(clickedSquare, actualSquare);
+        }
         BOARD.unDrawValidMovements(validMovements);
         changeTurn();
 

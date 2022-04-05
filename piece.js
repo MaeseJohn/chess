@@ -13,7 +13,8 @@ class Piece
     }
 
     #kingPieceDirection(square, king)
-    {        
+    {      
+        //CABALLO NO CONTEMPLADO  
         let kingCoordinates = king.getCoordinatesFromName();
         let squareCoordinates = square.getCoordinatesFromName();
         let xSubtraction = kingCoordinates.x - squareCoordinates.x
@@ -80,13 +81,17 @@ class Piece
     #lineMovementsBetwenKingPiece(board, king, direction)
     {
         let blockSquares = [];
-        let destinationSquare = board.calculatePosition(king.getName(), direction);
-        blockSquares.push(destinationSquare);
-
-        while(destinationSquare.isEmpty())
+        if(direction != undefined)
         {
-            destinationSquare = board.calculatePosition(destinationSquare.getName(), direction);
+            let destinationSquare = board.calculatePosition(king.getName(), direction);
             blockSquares.push(destinationSquare);
+            
+
+            while(destinationSquare.isEmpty())
+            {
+                destinationSquare = board.calculatePosition(destinationSquare.getName(), direction);
+                blockSquares.push(destinationSquare);
+            }
         }
         return blockSquares;
     }
