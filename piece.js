@@ -14,7 +14,6 @@ class Piece
 
     #kingPieceDirection(square, king)
     {      
-        //CABALLO NO CONTEMPLADO  
         let kingCoordinates = king.getCoordinatesFromName();
         let squareCoordinates = square.getCoordinatesFromName();
         let xSubtraction = kingCoordinates.x - squareCoordinates.x
@@ -105,22 +104,32 @@ class Piece
 
         if(turn == this.#color)
         {
-            if(checks.length == 1)
+            if(checks.length > 1)
             {
-                let kingPieceDirection = this.#kingPieceDirection(checks[0], king);
-                blockSquares = this.#lineMovementsBetwenKingPiece(board, king, kingPieceDirection);
-
-                blockSquares = blockSquares.filter(square => {
-                    return pieceMovements.indexOf(square) !== -1;
-                })
                 return blockSquares;
             }
-            else if (checks.length > 1)
+
+            if(checks.length == 1)
             {
+                if(checks[0].getPiece().getType() == "knight")
+                {
+                    blockSquares = checks.filter(square => {
+                        return pieceMovements.indexOf(square) !== -1;
+                    })
+                }
+                else
+                {
+                    let kingPieceDirection = this.#kingPieceDirection(checks[0], king);
+                    blockSquares = this.#lineMovementsBetwenKingPiece(board, king, kingPieceDirection);
+
+                    blockSquares = blockSquares.filter(square => {
+                    return pieceMovements.indexOf(square) !== -1;
+                    })
+                }
+
                 return blockSquares;
             }
         }
-
         return pieceMovements;
     }
 

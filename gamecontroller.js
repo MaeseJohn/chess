@@ -52,8 +52,8 @@ function drawMovemets()
       BOARD.drawValidMovements(validMovements);
       clickedSquare = actualSquare;
       pieceWasClicked = true;
+      return true;
     }
-    return true;
   }
   return false;
 }
@@ -114,7 +114,7 @@ function checkMate()
   if(checks.length > 0)
   {
     let board = BOARD.getSquaresArray()
-    board.map(square => {
+    board = board.filter(square => {
       console.log(square);
       if(square.getName() != 'outOfBoard' && !square.isEmpty())
       {
@@ -126,6 +126,7 @@ function checkMate()
         }
       }
     })
+    console.log(board.length);
     return board.length == 0;
   }
   return false;
@@ -208,7 +209,6 @@ window.addEventListener('PromotionChoice', evt =>
         console.log("Default switch case");
         break;
     }
-    console.log("sd")
     clickedSquare.setPiece(piece);
     BOARD.movePiece(clickedSquare, actualSquare);
     changeTurn();
@@ -235,7 +235,6 @@ window.addEventListener('PromotionChoice', evt =>
 window.addEventListener('boardClick', evt =>
 {
   actualSquare = evt.detail;
-  console.log(actualSquare);
 
   if(!pieceWasClicked)
   {

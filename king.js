@@ -24,11 +24,12 @@ class King extends Piece
             {
                 if(whiteCastling.queenRook)
                 {
-                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.LEFT)
+                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.LEFT);
                     tmp = validMovements.find(item => item == destinationSquare);
+
                     if(tmp != undefined)
                     {
-                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.LEFT)
+                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.LEFT);
                         if(kingInCheck(destinationSquare).length == 0)
                         {
                             castlingMovements.push(destinationSquare);
@@ -39,16 +40,15 @@ class King extends Piece
 
                 if(whiteCastling.kingRook)
                 {
-
-                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.RIGHT)
+                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.RIGHT);
                     tmp = validMovements.find(item => item == destinationSquare);
+
                     if(tmp != undefined)
                     {
-                        console.log("y aqui?")
-                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.RIGHT)
+                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.RIGHT);
+
                         if(kingInCheck(destinationSquare).length == 0)
                         {
-                            console.log("dentro")
                             castlingMovements.push(destinationSquare);
                         }
                     }
@@ -63,11 +63,13 @@ class King extends Piece
             {
                 if(blackCastling.queenRook)
                 {
-                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.LEFT)
+                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.LEFT);
                     tmp = validMovements.find(item => item == destinationSquare);
+
                     if(tmp != undefined)
                     {
-                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.LEFT)
+                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.LEFT);
+
                         if(kingInCheck(destinationSquare).length == 0)
                         {
                             castlingMovements.push(destinationSquare);
@@ -77,25 +79,21 @@ class King extends Piece
 
                 if(blackCastling.kingRook)
                 {
-
-                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.RIGHT)
+                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.RIGHT);
                     tmp = validMovements.find(item => item == destinationSquare);
+
                     if(tmp != undefined)
                     {
-                        console.log("y aqui?")
-                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.RIGHT)
+                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.RIGHT);
                         if(kingInCheck(destinationSquare).length == 0)
                         {
-                            console.log("dentro")
                             castlingMovements.push(destinationSquare);
                         }
                     }
                 }
             }
         }
-
-        return castlingMovements;
-        
+        return castlingMovements;      
     }
 
     getValidMovements(board, square)
@@ -126,9 +124,8 @@ class King extends Piece
             }
 
         }, this)
-        let asdf = this.#castling(board, square, validMovements).concat(validMovements); 
-        console.log(asdf)
-        return asdf; 
+        validMovements = this.#castling(board, square, validMovements).concat(validMovements); 
+        return validMovements; 
     }
 
 

@@ -94,15 +94,10 @@ class Board
     #boardClickEvent(evt)
     {
         let rect = this.#cv.getBoundingClientRect();
-        console.log(rect)
         let x = Math.trunc(Math.round(evt.clientX - rect.left) / 100);
         let y = Math.trunc(Math.round(evt.clientY - rect.top) / 100);
-
-        console.log(x)
-        console.log(y)
-        
         let square = this.getSquare(x, y);
-        console.log(square)
+
         window.dispatchEvent(new CustomEvent('boardClick', { detail: square }));
     }
     
@@ -140,16 +135,14 @@ class Board
         let destiantionIndex = this.#getIndexFromFileRank(destinationSquare.getFile(), destinationSquare.getRank())
         let rook;
         let rookdestination;
-        console.log("hola")
+
         if(kingIndex > destiantionIndex)
         {
-            console.log("hola2")
             kingSquare.getPiece().getColor() == "white" ? rook = this.#squares[91] : rook = this.#squares[21];
             kingSquare.getPiece().getColor() == "white" ? rookdestination = this.#squares[94] : rookdestination = this.#squares[24];
         }
         else if(kingIndex < destiantionIndex)
         {
-            console.log("hola");
             kingSquare.getPiece().getColor() == "white" ? rook = this.#squares[98] : rook = this.#squares[28];
             kingSquare.getPiece().getColor() == "white" ? rookdestination = this.#squares[96] : rookdestination = this.#squares[26];
         }
