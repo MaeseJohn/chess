@@ -8,7 +8,9 @@
         margin: 100px;
         box-shadow:10px 10px 10px black;
         border-radius: 1%;
+        display: inline-block;
       }
+
       body{
         background-color: #17202A;
       }
@@ -25,18 +27,65 @@
         overflow: auto; 
         background-color: rgb(0,0,0);
         background-color: rgba(0,0,0,0.7);
-
       }
+
       .modalContent{
         display: flex;
         position: fixed;
         margin-top: 325px;
         margin-left: 200px;
-        background-color: rgb(75,130,50,.9)  
+        background-color: rgb(75,130,50,.9);
       }
+
       .modalContent > div{
         border: 1px solid black;
       }
+
+      .winmodalContent{
+        background-color: gray;
+        margin-top: 300px;
+        margin-left: 350px;
+        position: fixed;
+        border: 1px solid black;
+        width: 325px;
+        height: 150px;
+        border-radius: 5%;
+      }
+
+      .wintext{
+        font-size: 50px;
+        text-align: center;
+        font-family: Arial, Helvetica, sans-serif;
+        text-transform: uppercase;
+      }
+
+      .timer{
+        display: inline-block;
+        position: absolute;
+        margin-top: 100px;
+      }
+
+      .buttons{
+        display: inline-block;
+        position: absolute;
+        margin-top: 300px;
+      }
+
+      .buttons > button{
+        background-color: #4CAF50;
+        border: 2px solid black;
+        color: black;
+        height: 100px;
+        width: 500px;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+        font-size: 25px;
+        margin: 20px 10px;
+        cursor: pointer;
+        border-radius: 10px;
+      }
+
     </style>
   </head>
   <body>
@@ -48,7 +97,22 @@
         <div><img id="queenimg" width="150" height="150"></div>
       </div>
     </div>
+
+    <div id="winmodal" class="modal">
+      <div class="winmodalContent"> 
+        <p id="wintext" class="wintext"></p>
+      </div>
+    </div>
+
     <canvas id="canvas" width="800" height="800"></canvas>
+  
+    <div class="timer">
+      <p>TIMER</p>
+      <div id="buttons" class="buttons">
+        <button id="playButton">Play</button>
+        <button id="linkButton">Copy Link</button>
+      </div>
+    </div>
     <script src="square.js"></script>
     <script src="piece.js"></script>
     <script src="pawn.js"></script>

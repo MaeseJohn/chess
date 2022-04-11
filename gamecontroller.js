@@ -5,6 +5,8 @@ const LIGHT_BROWN = "#dbb779";
 const DARK_BROWN  = "#452a1e";
 const GREEN = 'rgb(75,130,50,.7)';
 
+const WIN_MODAL = document.getElementById("winmodal");
+const WIN_MODAL_TEXT = document.getElementById("wintext");
 const PROMOTION = document.getElementById("modal");
 const ROOK_PROMOTION_IMG = document.getElementById("rookimg");
 const KNIGHT_PROMOTION_IMG = document.getElementById("knightimg");
@@ -115,22 +117,33 @@ function checkMate()
   {
     let board = BOARD.getSquaresArray()
     board = board.filter(square => {
-      console.log(square);
       if(square.getName() != 'outOfBoard' && !square.isEmpty())
       {
-        console.log("aquidentrito")
         if(square.getPiece().getColor() == turn && square.getPiece().getValidMovements(BOARD, square).length > 0)
         {
-          console.log("vamos a ver que pasa ahor amacho")
           return square;
         }
       }
     })
-    console.log(board.length);
     return board.length == 0;
   }
   return false;
 }
+
+function winmodal()
+{
+  let wincolor;
+  turn == "white" ? wincolor = "BLACK" : wincolor = "WHITE"; 
+  WIN_MODAL_TEXT.textContent = wincolor + " WIN";
+  WIN_MODAL.style.display = "flex";
+}
+
+function winevent()
+{
+  WIN_MODAL.style.display = "none";
+}
+WIN_MODAL.addEventListener('click', winevent);
+
 
 function promotion()
 { 
@@ -151,7 +164,6 @@ function promotion()
   }
   return false;
 }
-
 PROMOTION.addEventListener('click', promotionEvent);
 
 function promotionEvent(evt)
@@ -219,7 +231,7 @@ window.addEventListener('PromotionChoice', evt =>
     
     if(checkMate())
     {
-      console.log("Jaque Mate 2")
+      winmodal();
     }
   }
 
@@ -263,7 +275,7 @@ window.addEventListener('boardClick', evt =>
         
         if(checkMate())
         {
-          console.log("Jaque Mate1")
+          winmodal();
         }
 
         pieceWasClicked = false;
