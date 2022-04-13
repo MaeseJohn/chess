@@ -12,6 +12,7 @@ const ROOK_PROMOTION_IMG = document.getElementById("rookimg");
 const KNIGHT_PROMOTION_IMG = document.getElementById("knightimg");
 const BISHOP_PROMOTION_IMG = document.getElementById("bishopimg");
 const QUEEN_PROMOTION_IMG = document.getElementById("queenimg");
+const RESET_BUTTON = document.getElementById("resetButton");
 
 let turn = "white";
 let pieceWasClicked = false;
@@ -23,9 +24,9 @@ const BOARD = new Board(BOAR_SIZE, SQUARE_SIZE, LIGHT_BROWN, DARK_BROWN);
 BOARD.initBoard();
 
 let checks = [];
-
 let whiteKing = BOARD.getSquareFromFileRank("E", "1");
 let blackKing = BOARD.getSquareFromFileRank("E", "8");
+
 
 let whiteCastling = {
   king: true,
@@ -37,6 +38,26 @@ let blackCastling = {
   king: true,
   queenRook: true,
   kingRook: true,
+}
+
+RESET_BUTTON.onclick = function() {
+
+  turn = "white";
+  pieceWasClicked = false;
+  actualSquare    = undefined;
+  clickedSquare   = undefined;
+  validMovements  = undefined;
+  checks = [];
+  BOARD.initBoard();
+  whiteKing = BOARD.getSquareFromFileRank("E", "1");
+  blackKing = BOARD.getSquareFromFileRank("E", "8")
+  whiteCastling.king      = true;
+  whiteCastling.kingRook  = true;
+  whiteCastling.queenRook = true;
+  blackCastling.king      = true;
+  blackCastling.kingRook  = true;
+  blackCastling.queenRook = true;
+
 }
 
 function changeTurn()
