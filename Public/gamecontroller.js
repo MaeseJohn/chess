@@ -14,6 +14,59 @@ const BISHOP_PROMOTION_IMG = document.getElementById("bishopimg");
 const QUEEN_PROMOTION_IMG = document.getElementById("queenimg");
 const RESET_BUTTON = document.getElementById("resetButton");
 
+
+const queryString = window.location.search
+var loc = window.location;
+var uri = 'ws:';
+
+if (loc.protocol === 'https:') {
+    uri = 'wss:';
+}
+uri += '//' + loc.host;
+var q;
+if(queryString == "?algo=true")
+{
+    q = 'ws'
+}
+else
+{
+  q = 'ws2'
+}
+uri += loc.pathname + q 
+
+console.log(uri)
+console.log(queryString)
+
+ws = new WebSocket(uri)
+
+ws.onopen = function() {
+    console.log('Connected')
+}
+
+ws.onmessage = function(evt) {
+  console.log("onmessage")
+  console.log(evt.data)
+  let serverData = JSON.parse(evt.data)
+  console.log(serverData);
+
+  let pieceSquare = BOARD.getSquareFromFileRank(serverData.pieceSquare.charAt(0), serverData.pieceSquare.charAt(1))
+  let destinationSquare = BOARD.getSquareFromFileRank(serverData.destinationSquare.charAt(0), serverData.destinationSquare.charAt(1))
+  BOARD.movePiece(pieceSquare, destinationSquare);
+  changeTurn();
+
+}
+
+/*UTTON.onclick = function (){
+    chageColor(num)
+    let gili = JSON.stringify({
+        num: num
+    })
+    ws.send(gili)
+    console.log(gili)
+    num++
+}*/
+
+
 let turn = "white";
 let pieceWasClicked = false;
 let actualSquare;
@@ -26,7 +79,6 @@ BOARD.initBoard();
 let checks = [];
 let whiteKing = BOARD.getSquareFromFileRank("E", "1");
 let blackKing = BOARD.getSquareFromFileRank("E", "8");
-
 
 let whiteCastling = {
   king: true,
@@ -165,7 +217,6 @@ function winevent()
 }
 WIN_MODAL.addEventListener('click', winevent);
 
-
 function promotion()
 { 
   if(clickedSquare.getPiece().getType() != "pawn")
@@ -268,6 +319,14 @@ window.addEventListener('PromotionChoice', evt =>
 window.addEventListener('boardClick', evt =>
 {
   actualSquare = evt.detail;
+  let serverData = {
+    castling: false,
+    checkMate: false,
+    promotion: false,
+    pieceSquare: "",
+    destinationSquare: "",
+    turn: "",
+  }
 
   if(!pieceWasClicked)
   {
@@ -282,13 +341,20 @@ window.addEventListener('boardClick', evt =>
         if(Math.abs(clickedSquare.getFile().charCodeAt(0) - actualSquare.getFile().charCodeAt(0)) == 2 && clickedSquare.getPiece().getType() == "king")
         {
           BOARD.castlingMove(clickedSquare, actualSquare);
+          serverData.castling = true;
+          serverData.pieceSquare = clickedSquare.getName();
+          serverData.destinationSquare = actualSquare.getName();
         }
         else
         {
           BOARD.movePiece(clickedSquare, actualSquare);
+          serverData.pieceSquare = clickedSquare.getName();
+          serverData.destinationSquare = actualSquare.getName();
         }
+
         BOARD.unDrawValidMovements(validMovements);
         changeTurn();
+        serverData.turn = turn;
 
         let king;
         turn == "white" ? king = whiteKing : king = blackKing;
@@ -297,12 +363,20 @@ window.addEventListener('boardClick', evt =>
         if(checkMate())
         {
           winmodal();
+          serverData.checkmate = true;
         }
 
         pieceWasClicked = false;
         validMovements  = undefined;
         clickedSquare   = undefined;
+      }
+      else
+      {
+        serverData.promotion = true;
       }  
+      ws.send(JSON.stringify(serverData));
+      console.log(serverData);
+
     }
     else
     {
@@ -316,6 +390,8 @@ window.addEventListener('boardClick', evt =>
     }
   }
 })
+
+
 
 
 
