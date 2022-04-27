@@ -15,6 +15,7 @@ type ChessData struct {
 	Turn              string `json:"turn"`
 	PieceSquare       string `json:"pieceSquare"`
 	DestinationSquare string `json:"destinationSquare"`
+	PromotionChoice   string `json:"promotionChoice"`
 }
 
 func hello(c echo.Context) error {

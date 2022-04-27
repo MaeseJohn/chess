@@ -51,8 +51,45 @@ ws.onmessage = function(evt) {
 
   let pieceSquare = BOARD.getSquareFromFileRank(serverData.pieceSquare.charAt(0), serverData.pieceSquare.charAt(1))
   let destinationSquare = BOARD.getSquareFromFileRank(serverData.destinationSquare.charAt(0), serverData.destinationSquare.charAt(1))
+
+  if(serverData.promotion)
+  {
+    let piece;
+    switch(serverData.promotionChoice)
+    {
+      case "rook":
+        piece = new Rook(turn);
+        break;
+
+      case "knight":
+        piece = new Knight(turn);
+        break;
+
+      case "bishop":
+        piece = new Bishop(turn);
+        break;
+
+      case "queen":
+        piece = new Queen(turn);
+        break;
+      
+      default:
+        console.log("Default switch case");
+        break;
+    }
+    console.log(pieceSquare);
+    console.log(piece);
+    pieceSquare.setPiece(piece);
+  }
+
   BOARD.movePiece(pieceSquare, destinationSquare);
   changeTurn();
+
+
+  if(serverData.checkMate && checkMate())
+  {
+    winmodal();
+  }
 
 }
 
@@ -268,6 +305,15 @@ function promotionEvent(evt)
 
 window.addEventListener('PromotionChoice', evt =>
 {
+  let serverData = {
+    castling: false,
+    checkMate: false,
+    promotion: false,
+    promotionChoice: "",
+    pieceSquare: "",
+    destinationSquare: "",
+    turn: "",
+  }
   let piece;
   if(evt.detail != null)
   {
@@ -303,8 +349,15 @@ window.addEventListener('PromotionChoice', evt =>
     
     if(checkMate())
     {
+      serverData.checkMate = true;
       winmodal();
     }
+    serverData.turn              = turn;
+    serverData.promotion         = true;
+    serverData.pieceSquare       = clickedSquare.getName();
+    serverData.promotionChoice   = piece.getType();
+    serverData.destinationSquare = actualSquare.getName();
+    ws.send(JSON.stringify(serverData));
   }
 
   PROMOTION.style.display = "none";
@@ -319,10 +372,12 @@ window.addEventListener('PromotionChoice', evt =>
 window.addEventListener('boardClick', evt =>
 {
   actualSquare = evt.detail;
+
   let serverData = {
     castling: false,
     checkMate: false,
     promotion: false,
+    promotionChoice: "",
     pieceSquare: "",
     destinationSquare: "",
     turn: "",
@@ -369,14 +424,9 @@ window.addEventListener('boardClick', evt =>
         pieceWasClicked = false;
         validMovements  = undefined;
         clickedSquare   = undefined;
+        ws.send(JSON.stringify(serverData));
+        console.log(serverData);
       }
-      else
-      {
-        serverData.promotion = true;
-      }  
-      ws.send(JSON.stringify(serverData));
-      console.log(serverData);
-
     }
     else
     {
