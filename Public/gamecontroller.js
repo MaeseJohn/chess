@@ -82,12 +82,16 @@ ws.onmessage = function(evt) {
     pieceSquare.setPiece(piece);
   }
 
-  BOARD.movePiece(pieceSquare, destinationSquare);
+  BOARD.movePiece(pieceSquare, destinationSquare)
   changeTurn();
 
+  let king;
+  turn == "white" ? king = whiteKing : king = blackKing;
+  checks = kingInCheck(king);
 
-  if(serverData.checkMate && checkMate())
+  if(serverData.checkmate && checkMate())
   {
+    console.log("jaquemate")
     winmodal();
   }
 
