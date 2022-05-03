@@ -8,6 +8,11 @@ import (
 	"golang.org/x/net/websocket"
 )
 
+type Game struct {
+	Chanel1 chan ChessData
+	Chanel2 chan ChessData
+}
+
 type ChessData struct {
 	Castling          bool   `json:"castling"`
 	Checkmate         bool   `json:"checkmate"`
@@ -20,6 +25,30 @@ type ChessData struct {
 
 func hello(c echo.Context) error {
 	websocket.Handler(func(ws *websocket.Conn) {
+		fmt.Println(c.ParamNames())
+		fmt.Println(c.ParamValues())
+		fmt.Println(c.FormValue("token"))
+		var canal1 chan ChessData
+		var canal2 chan ChessData
+		token := c.FormValue("token")
+
+		fmt.Println(token)
+
+		if _, ok := games[token]; ok {
+			fmt.Println(token)
+			fmt.Println("haytoken")
+			canal1 = games[token].Chanel1
+			canal2 = games[token].Chanel2
+		} else {
+			fmt.Println("no hay token")
+			canal1 = make(chan ChessData)
+			canal2 = make(chan ChessData)
+			game := &Game{
+				Chanel1: canal2,
+				Chanel2: canal1,
+			}
+			games[token] = *game
+		}
 		defer ws.Close()
 		for {
 			// Write
@@ -30,8 +59,8 @@ func hello(c echo.Context) error {
 					err := websocket.JSON.Send(ws, &data)
 					if err != nil {
 						c.Logger().Error(err)
+						return
 					}
-
 				}
 			}()
 
@@ -41,17 +70,21 @@ func hello(c echo.Context) error {
 			fmt.Printf("hello read 1: %v\n", msg)
 			if err != nil {
 				c.Logger().Error(err)
+				return
 			}
-			canal <- msg
+			canal1 <- msg
 		}
 	}).ServeHTTP(c.Response(), c.Request())
 	return nil
 }
 
-func hello2(c echo.Context) error {
+/*func hello2(c echo.Context) error {
 	websocket.Handler(func(ws *websocket.Conn) {
+		fmt.Println(c.ParamNames())
+		fmt.Println(c.Param("token"))
 		defer ws.Close()
 		for {
+
 			// Write
 			go func() {
 				for {
@@ -60,6 +93,7 @@ func hello2(c echo.Context) error {
 					err := websocket.JSON.Send(ws, &data)
 					if err != nil {
 						c.Logger().Error(err)
+						return
 					}
 				}
 			}()
@@ -70,23 +104,22 @@ func hello2(c echo.Context) error {
 			fmt.Printf("hello read 2: %v\n", msg)
 			if err != nil {
 				c.Logger().Error(err)
+				return
 			}
 			canal2 <- msg
 		}
 	}).ServeHTTP(c.Response(), c.Request())
 	return nil
-}
+}*/
 
-var canal chan ChessData = make(chan ChessData)
-var canal2 chan ChessData = make(chan ChessData)
+var games = make(map[string]Game)
 
 func main() {
+
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Static("/", "public")
-	e.GET("/ws", hello)
-	e.GET("/ws2", hello2)
+	e.GET("/ws:token", hello)
 	e.Logger.Fatal(e.Start(":8080"))
-
 }

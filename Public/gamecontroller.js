@@ -4,6 +4,7 @@ const PIECES_SIZE = 100; // In pixels
 const LIGHT_BROWN = "#dbb779";
 const DARK_BROWN  = "#452a1e";
 const GREEN = 'rgb(75,130,50,.7)';
+const queryString = window.location.search
 
 const WIN_MODAL = document.getElementById("winmodal");
 const WIN_MODAL_TEXT = document.getElementById("wintext");
@@ -12,35 +13,51 @@ const ROOK_PROMOTION_IMG = document.getElementById("rookimg");
 const KNIGHT_PROMOTION_IMG = document.getElementById("knightimg");
 const BISHOP_PROMOTION_IMG = document.getElementById("bishopimg");
 const QUEEN_PROMOTION_IMG = document.getElementById("queenimg");
-const RESET_BUTTON = document.getElementById("resetButton");
+const REMATCH_BUTTON = document.getElementById("resetButton");
+const LINK_BUTTON =  document.getElementById("linkButton");
 
-
-const queryString = window.location.search
-var loc = window.location;
-var uri = 'ws:';
-
-if (loc.protocol === 'https:') {
-    uri = 'wss:';
-}
-uri += '//' + loc.host;
-var q;
-if(queryString == "?algo=true")
+console.log(queryString);
+LINK_BUTTON.onclick = function ()
 {
-    q = 'ws'
 }
-else
+
+function makeUri()
 {
-  q = 'ws2'
+  //CREATING A TOKEN  
+  var rand = function() {
+    return Math.random().toString(36).substr(2); // remove `0.`
+  };
+  
+  var tokengenerator = function() {
+    return rand() + rand(); // to make it longer
+  };
+  let token = tokengenerator()
+  
+  let loc = window.location;
+  let uri = 'ws:';
+  
+  uri += '//' + loc.host;
+  let q;
+  
+  if(queryString == '')
+  {
+    q = 'ws/' + '?token=' + token
+  }
+  else
+  {
+    q = 'ws/' + queryString
+  }
+  uri += loc.pathname + q 
+  
+  console.log(uri);
+  return uri;
 }
-uri += loc.pathname + q 
 
-console.log(uri)
-console.log(queryString)
-
+let uri = makeUri();
 ws = new WebSocket(uri)
 
 ws.onopen = function() {
-    console.log('Connected')
+  console.log('Connected')
 }
 
 ws.onmessage = function(evt) {
@@ -97,6 +114,7 @@ ws.onmessage = function(evt) {
 
 }
 
+
 /*UTTON.onclick = function (){
     chageColor(num)
     let gili = JSON.stringify({
@@ -133,7 +151,7 @@ let blackCastling = {
   kingRook: true,
 }
 
-RESET_BUTTON.onclick = function() {
+REMATCH_BUTTON.onclick = function() {
 
   turn = "white";
   pieceWasClicked = false;
@@ -150,7 +168,7 @@ RESET_BUTTON.onclick = function() {
   blackCastling.king      = true;
   blackCastling.kingRook  = true;
   blackCastling.queenRook = true;
-
+ 
 }
 
 function changeTurn()
