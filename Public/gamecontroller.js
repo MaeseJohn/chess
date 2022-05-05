@@ -3,22 +3,27 @@ const BOAR_SIZE   = 8;  // Namber of squares in a row and column
 const PIECES_SIZE = 100; // In pixels
 const LIGHT_BROWN = "#dbb779";
 const DARK_BROWN  = "#452a1e";
-const GREEN = 'rgb(75,130,50,.7)';
+const GREEN       = 'rgb(75,130,50,.7)';
 const queryString = window.location.search
+let playerColor;
+let token;
 
-const WIN_MODAL = document.getElementById("winmodal");
-const WIN_MODAL_TEXT = document.getElementById("wintext");
-const PROMOTION = document.getElementById("modal");
-const ROOK_PROMOTION_IMG = document.getElementById("rookimg");
+const WIN_MODAL            = document.getElementById("winmodal");
+const WIN_MODAL_TEXT       = document.getElementById("wintext");
+const PROMOTION            = document.getElementById("modal");
+const ROOK_PROMOTION_IMG   = document.getElementById("rookimg");
 const KNIGHT_PROMOTION_IMG = document.getElementById("knightimg");
 const BISHOP_PROMOTION_IMG = document.getElementById("bishopimg");
-const QUEEN_PROMOTION_IMG = document.getElementById("queenimg");
-const REMATCH_BUTTON = document.getElementById("resetButton");
-const LINK_BUTTON =  document.getElementById("linkButton");
+const QUEEN_PROMOTION_IMG  = document.getElementById("queenimg");
+const REMATCH_BUTTON       = document.getElementById("resetButton");
+const LINK_BUTTON          = document.getElementById("linkButton");
+
 
 console.log(queryString);
 LINK_BUTTON.onclick = function ()
 {
+  let copyurl = `http://localhost:8080/?token=${token}`
+  navigator.clipboard.writeText(copyurl);
 }
 
 function makeUri()
@@ -31,21 +36,21 @@ function makeUri()
   var tokengenerator = function() {
     return rand() + rand(); // to make it longer
   };
-  let token = tokengenerator()
+
   
   let loc = window.location;
   let uri = 'ws:';
-  
   uri += '//' + loc.host;
   let q;
   
   if(queryString == '')
   {
-    q = 'ws/' + '?token=' + token
+    token = tokengenerator()
+    q = 'ws' + '?token=' + token
   }
   else
   {
-    q = 'ws/' + queryString
+    q = 'ws2' + queryString
   }
   uri += loc.pathname + q 
   
@@ -65,51 +70,60 @@ ws.onmessage = function(evt) {
   console.log(evt.data)
   let serverData = JSON.parse(evt.data)
   console.log(serverData);
-
-  let pieceSquare = BOARD.getSquareFromFileRank(serverData.pieceSquare.charAt(0), serverData.pieceSquare.charAt(1))
-  let destinationSquare = BOARD.getSquareFromFileRank(serverData.destinationSquare.charAt(0), serverData.destinationSquare.charAt(1))
-
-  if(serverData.promotion)
+  
+  if(serverData.playerColor != "")
   {
-    let piece;
-    switch(serverData.promotionChoice)
-    {
-      case "rook":
-        piece = new Rook(turn);
-        break;
-
-      case "knight":
-        piece = new Knight(turn);
-        break;
-
-      case "bishop":
-        piece = new Bishop(turn);
-        break;
-
-      case "queen":
-        piece = new Queen(turn);
-        break;
-      
-      default:
-        console.log("Default switch case");
-        break;
-    }
-    console.log(pieceSquare);
-    console.log(piece);
-    pieceSquare.setPiece(piece);
+    playerColor = serverData.playerColor
   }
+  
 
-  BOARD.movePiece(pieceSquare, destinationSquare)
-  changeTurn();
-
-  let king;
-  turn == "white" ? king = whiteKing : king = blackKing;
-  checks = kingInCheck(king);
-
-  if(serverData.checkmate && checkMate())
+  if(serverData.pieceSquare != "" && serverData.destinationSquare != "")
   {
-    console.log("jaquemate")
-    winmodal();
+    let pieceSquare = BOARD.getSquareFromFileRank(serverData.pieceSquare.charAt(0), serverData.pieceSquare.charAt(1))
+    let destinationSquare = BOARD.getSquareFromFileRank(serverData.destinationSquare.charAt(0), serverData.destinationSquare.charAt(1))
+  
+    if(serverData.promotion)
+    {
+      let piece;
+      switch(serverData.promotionChoice)
+      {
+        case "rook":
+          piece = new Rook(turn);
+          break;
+  
+        case "knight":
+          piece = new Knight(turn);
+          break;
+  
+        case "bishop":
+          piece = new Bishop(turn);
+          break;
+  
+        case "queen":
+          piece = new Queen(turn);
+          break;
+        
+        default:
+          console.log("Default switch case");
+          break;
+      }
+      console.log(pieceSquare);
+      console.log(piece);
+      pieceSquare.setPiece(piece);
+    }
+  
+    BOARD.movePiece(pieceSquare, destinationSquare)
+    changeTurn();
+  
+    let king;
+    turn == "white" ? king = whiteKing : king = blackKing;
+    checks = kingInCheck(king);
+  
+    if(serverData.checkmate && checkMate())
+    {
+      console.log("jaquemate")
+      winmodal();
+    }
   }
 
 }
@@ -403,6 +417,11 @@ window.addEventListener('boardClick', evt =>
     pieceSquare: "",
     destinationSquare: "",
     turn: "",
+  }
+
+  if(playerColor != turn)
+  {
+    return
   }
 
   if(!pieceWasClicked)
