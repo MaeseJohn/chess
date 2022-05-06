@@ -23,6 +23,7 @@ type ChessData struct {
 	Castling          bool   `json:"castling"`
 	Checkmate         bool   `json:"checkmate"`
 	Promotion         bool   `json:"promotion"`
+	Finish            bool   `json:"finish"`
 	Turn              string `json:"turn"`
 	PieceSquare       string `json:"pieceSquare"`
 	DestinationSquare string `json:"destinationSquare"`
@@ -55,10 +56,10 @@ func createGame(c echo.Context) error {
 		}
 
 		fmt.Println("createGame2")
-		playGame(game.Chanel1, game.Chanel2, c, ws)
+		playGame(c, ws, game.Chanel1, game.Chanel2)
 
 	}).ServeHTTP(c.Response(), c.Request())
-	fmt.Println("createGame3")
+	fmt.Println("createGamesalida")
 	return nil
 }
 
@@ -77,20 +78,19 @@ func joinGame(c echo.Context) error {
 			c.Logger().Error(err)
 			return
 		}
-
-		playGame(games[token].Chanel2, games[token].Chanel1, c, ws)
+		playGame(c, ws, games[token].Chanel2, games[token].Chanel1)
 
 	}).ServeHTTP(c.Response(), c.Request())
+	fmt.Println("joingame salida")
 	return nil
 }
 
-func playGame(canal1 chan ChessData, canal2 chan ChessData, c echo.Context, ws *websocket.Conn) {
+func playGame(c echo.Context, ws *websocket.Conn, canal1 chan ChessData, canal2 chan ChessData) {
 	for {
 		// Write
 		go func() {
 			for {
 				data := <-canal2
-				fmt.Printf("hello send 1: %v\n", data)
 				err := websocket.JSON.Send(ws, &data)
 				if err != nil {
 					c.Logger().Error(err)
@@ -100,14 +100,19 @@ func playGame(canal1 chan ChessData, canal2 chan ChessData, c echo.Context, ws *
 		}()
 
 		// Read
-		msg := ChessData{}
-		err := websocket.JSON.Receive(ws, &msg)
-		fmt.Printf("hello read 1: %v\n", msg)
+		data := ChessData{}
+		err := websocket.JSON.Receive(ws, &data)
 		if err != nil {
 			c.Logger().Error(err)
 			return
 		}
-		canal1 <- msg
+		if data.Finish {
+			return
+		}
+		canal1 <- data
+		if data.Checkmate {
+			return
+		}
 	}
 }
 

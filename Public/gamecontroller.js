@@ -15,7 +15,6 @@ const ROOK_PROMOTION_IMG   = document.getElementById("rookimg");
 const KNIGHT_PROMOTION_IMG = document.getElementById("knightimg");
 const BISHOP_PROMOTION_IMG = document.getElementById("bishopimg");
 const QUEEN_PROMOTION_IMG  = document.getElementById("queenimg");
-const REMATCH_BUTTON       = document.getElementById("resetButton");
 const LINK_BUTTON          = document.getElementById("linkButton");
 
 
@@ -121,8 +120,12 @@ ws.onmessage = function(evt) {
   
     if(serverData.checkmate && checkMate())
     {
+      let finish = {
+        finish: true
+      }
       console.log("jaquemate")
       winmodal();
+      ws.send(JSON.stringify(finish))
     }
   }
 
@@ -163,26 +166,6 @@ let blackCastling = {
   king: true,
   queenRook: true,
   kingRook: true,
-}
-
-REMATCH_BUTTON.onclick = function() {
-
-  turn = "white";
-  pieceWasClicked = false;
-  actualSquare    = undefined;
-  clickedSquare   = undefined;
-  validMovements  = undefined;
-  checks = [];
-  BOARD.initBoard();
-  whiteKing = BOARD.getSquareFromFileRank("E", "1");
-  blackKing = BOARD.getSquareFromFileRank("E", "8")
-  whiteCastling.king      = true;
-  whiteCastling.kingRook  = true;
-  whiteCastling.queenRook = true;
-  blackCastling.king      = true;
-  blackCastling.kingRook  = true;
-  blackCastling.queenRook = true;
- 
 }
 
 function changeTurn()
