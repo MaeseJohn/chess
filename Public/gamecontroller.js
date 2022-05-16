@@ -17,7 +17,6 @@ const BISHOP_PROMOTION_IMG = document.getElementById("bishopimg");
 const QUEEN_PROMOTION_IMG  = document.getElementById("queenimg");
 const LINK_BUTTON          = document.getElementById("linkButton");
 
-
 console.log(queryString);
 LINK_BUTTON.onclick = function ()
 {
@@ -130,18 +129,6 @@ ws.onmessage = function(evt) {
   }
 
 }
-
-
-/*UTTON.onclick = function (){
-    chageColor(num)
-    let gili = JSON.stringify({
-        num: num
-    })
-    ws.send(gili)
-    console.log(gili)
-    num++
-}*/
-
 
 let turn = "white";
 let pieceWasClicked = false;
@@ -413,46 +400,7 @@ window.addEventListener('boardClick', evt =>
   }
   else if(actualSquare.getName() != clickedSquare.getName())
   {
-    if(validMovements.includes(actualSquare))
-    {
-      if(!promotion())
-      {
-        if(Math.abs(clickedSquare.getFile().charCodeAt(0) - actualSquare.getFile().charCodeAt(0)) == 2 && clickedSquare.getPiece().getType() == "king")
-        {
-          BOARD.castlingMove(clickedSquare, actualSquare);
-          serverData.castling = true;
-          serverData.pieceSquare = clickedSquare.getName();
-          serverData.destinationSquare = actualSquare.getName();
-        }
-        else
-        {
-          BOARD.movePiece(clickedSquare, actualSquare);
-          serverData.pieceSquare = clickedSquare.getName();
-          serverData.destinationSquare = actualSquare.getName();
-        }
-
-        BOARD.unDrawValidMovements(validMovements);
-        changeTurn();
-        serverData.turn = turn;
-
-        let king;
-        turn == "white" ? king = whiteKing : king = blackKing;
-        checks = kingInCheck(king);
-        
-        if(checkMate())
-        {
-          winmodal();
-          serverData.checkmate = true;
-        }
-
-        pieceWasClicked = false;
-        validMovements  = undefined;
-        clickedSquare   = undefined;
-        ws.send(JSON.stringify(serverData));
-        console.log(serverData);
-      }
-    }
-    else
+    if(!validMovements.includes(actualSquare))
     {
       BOARD.unDrawValidMovements(validMovements);
       if(!drawMovemets())
@@ -461,7 +409,46 @@ window.addEventListener('boardClick', evt =>
         validMovements  = undefined;
         clickedSquare   = undefined;
       }
+      return
     }
+
+    if(promotion())
+    {
+     return
+    }
+
+    if(Math.abs(clickedSquare.getFile().charCodeAt(0) - actualSquare.getFile().charCodeAt(0)) == 2 && clickedSquare.getPiece().getType() == "king")
+    {
+      BOARD.castlingMove(clickedSquare, actualSquare);
+      serverData.castling = true;
+    }
+    else
+    {
+      BOARD.movePiece(clickedSquare, actualSquare);
+    }
+    
+    serverData.pieceSquare = clickedSquare.getName();
+    serverData.destinationSquare = actualSquare.getName();
+
+    BOARD.unDrawValidMovements(validMovements);
+    changeTurn();
+    serverData.turn = turn;
+
+    let king;
+    turn == "white" ? king = whiteKing : king = blackKing;
+    checks = kingInCheck(king);
+    
+    if(checkMate())
+    {
+      winmodal();
+      serverData.checkmate = true;
+    }
+
+    pieceWasClicked = false;
+    validMovements  = undefined;
+    clickedSquare   = undefined;
+    ws.send(JSON.stringify(serverData));
+    console.log(serverData);
   }
 })
 
