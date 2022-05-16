@@ -52,7 +52,6 @@ function makeUri()
   }
   uri += loc.pathname + q 
   
-  console.log(uri);
   return uri;
 }
 
@@ -64,16 +63,13 @@ ws.onopen = function() {
 }
 
 ws.onmessage = function(evt) {
-  console.log("onmessage")
-  console.log(evt.data)
+
   let serverData = JSON.parse(evt.data)
-  console.log(serverData);
   
   if(serverData.playerColor != "")
   {
     playerColor = serverData.playerColor
   }
-  
 
   if(serverData.pieceSquare != "" && serverData.destinationSquare != "")
   {
@@ -105,8 +101,6 @@ ws.onmessage = function(evt) {
           console.log("Default switch case");
           break;
       }
-      console.log(pieceSquare);
-      console.log(piece);
       pieceSquare.setPiece(piece);
     }
   
@@ -122,7 +116,6 @@ ws.onmessage = function(evt) {
       let finish = {
         finish: true
       }
-      console.log("jaquemate")
       winmodal();
       ws.send(JSON.stringify(finish))
     }
@@ -372,7 +365,6 @@ window.addEventListener('PromotionChoice', evt =>
   validMovements  = undefined;
   clickedSquare   = undefined;
 
-  console.log(evt.detail);
 })
 
 window.addEventListener('boardClick', evt =>
@@ -448,7 +440,6 @@ window.addEventListener('boardClick', evt =>
     validMovements  = undefined;
     clickedSquare   = undefined;
     ws.send(JSON.stringify(serverData));
-    console.log(serverData);
   }
 })
 

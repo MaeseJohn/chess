@@ -13,9 +13,8 @@ class King extends Piece
         return this.#PIECE_DIRECTONS;
     }
     
-    #castling(board, square, validMovements)
+    #castling(board, square)
     {
-        let tmp;
         let destinationSquare;
         let castlingMovements = []; 
         let castlingColor = this.getColor() == "white" ? whiteCastling : blackCastling;
@@ -25,35 +24,46 @@ class King extends Piece
             if(castlingColor.queenRook)
             {
                 destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.LEFT);
-                tmp = validMovements.find(item => item == destinationSquare);
-
-                if(tmp != undefined)
+                while(destinationSquare.isEmpty() && destinationSquare.getName() != 'outOfBoard')
                 {
-                    destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.LEFT);
-                    if(kingInCheck(destinationSquare).length == 0)
+                    if(kingInCheck(destinationSquare).length != 0)
                     {
-                        castlingMovements.push(destinationSquare);
+                        break
                     }
+                    destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.LEFT);
+                }
+                
+                if(destinationSquare.getName() != 'outOfBoard' && !destinationSquare.isEmpty())
+                {
+                    if(destinationSquare.getPiece().getType() == 'rook')
+                    {
+                        castlingMovements.push(board.getSquareFromFileRank('C', square.getRank()));
+                    } 
                 }
             }
 
             if(castlingColor.kingRook)
             {
                 destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.RIGHT);
-                tmp = validMovements.find(item => item == destinationSquare);
-
-                if(tmp != undefined)
+                while(destinationSquare.isEmpty() && destinationSquare.getName() != 'outOfBoard')
                 {
-                    destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.RIGHT);
-
-                    if(kingInCheck(destinationSquare).length == 0)
+                    if(kingInCheck(destinationSquare).length != 0)
                     {
-                        castlingMovements.push(destinationSquare);
+                        break
+                    }
+                    destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.RIGHT);
+                }
+        
+                if(destinationSquare.getName() != 'outOfBoard' && !destinationSquare.isEmpty())
+                {
+                    if(destinationSquare.getPiece().getType() == 'rook')
+                    {
+                        castlingMovements.push(board.getSquareFromFileRank('G', square.getRank()));
                     }
                 }
             }
+         
         }
-        
         return castlingMovements;      
     }
 
@@ -65,7 +75,6 @@ class King extends Piece
         
             let destinationSquare = board.calculatePosition(square.getName(), direction);
             
-
             if(destinationSquare.getName() != 'outOfBoard' && destinationSquare.isEmpty())
             {  
                 if(kingInCheck(destinationSquare).length == 0)
@@ -85,7 +94,7 @@ class King extends Piece
             }
 
         }, this)
-        validMovements = this.#castling(board, square, validMovements).concat(validMovements); 
+        validMovements = this.#castling(board, square).concat(validMovements); 
         return validMovements; 
     }
 
