@@ -17,82 +17,43 @@ class King extends Piece
     {
         let tmp;
         let destinationSquare;
-        let castlingMovements = [];
-        if(this.getColor() == "white")
+        let castlingMovements = []; 
+        let castlingColor = this.getColor() == "white" ? whiteCastling : blackCastling;
+    
+        if(castlingColor.king)
         {
-            if(whiteCastling.king)
+            if(castlingColor.queenRook)
             {
-                if(whiteCastling.queenRook)
+                destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.LEFT);
+                tmp = validMovements.find(item => item == destinationSquare);
+
+                if(tmp != undefined)
                 {
-                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.LEFT);
-                    tmp = validMovements.find(item => item == destinationSquare);
-
-                    if(tmp != undefined)
+                    destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.LEFT);
+                    if(kingInCheck(destinationSquare).length == 0)
                     {
-                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.LEFT);
-                        if(kingInCheck(destinationSquare).length == 0)
-                        {
-                            castlingMovements.push(destinationSquare);
-                        }
+                        castlingMovements.push(destinationSquare);
                     }
-
-                }
-
-                if(whiteCastling.kingRook)
-                {
-                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.RIGHT);
-                    tmp = validMovements.find(item => item == destinationSquare);
-
-                    if(tmp != undefined)
-                    {
-                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.RIGHT);
-
-                        if(kingInCheck(destinationSquare).length == 0)
-                        {
-                            castlingMovements.push(destinationSquare);
-                        }
-                    }
-
                 }
             }
-        }
 
-        if(this.getColor() == "black")
-        {
-            if(blackCastling.king)
+            if(castlingColor.kingRook)
             {
-                if(blackCastling.queenRook)
+                destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.RIGHT);
+                tmp = validMovements.find(item => item == destinationSquare);
+
+                if(tmp != undefined)
                 {
-                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.LEFT);
-                    tmp = validMovements.find(item => item == destinationSquare);
+                    destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.RIGHT);
 
-                    if(tmp != undefined)
+                    if(kingInCheck(destinationSquare).length == 0)
                     {
-                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.LEFT);
-
-                        if(kingInCheck(destinationSquare).length == 0)
-                        {
-                            castlingMovements.push(destinationSquare);
-                        }
-                    }
-                }
-
-                if(blackCastling.kingRook)
-                {
-                    destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.RIGHT);
-                    tmp = validMovements.find(item => item == destinationSquare);
-
-                    if(tmp != undefined)
-                    {
-                        destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.RIGHT);
-                        if(kingInCheck(destinationSquare).length == 0)
-                        {
-                            castlingMovements.push(destinationSquare);
-                        }
+                        castlingMovements.push(destinationSquare);
                     }
                 }
             }
         }
+        
         return castlingMovements;      
     }
 

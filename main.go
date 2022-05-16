@@ -33,7 +33,6 @@ type ChessData struct {
 
 func createGame(c echo.Context) error {
 	websocket.Handler(func(ws *websocket.Conn) {
-		fmt.Println("createGame")
 		defer ws.Close()
 
 		game := &Game{
@@ -55,17 +54,14 @@ func createGame(c echo.Context) error {
 			return
 		}
 
-		fmt.Println("createGame2")
 		playGame(c, ws, game.Chanel1, game.Chanel2)
 
 	}).ServeHTTP(c.Response(), c.Request())
-	fmt.Println("createGamesalida")
 	return nil
 }
 
 func joinGame(c echo.Context) error {
 	websocket.Handler(func(ws *websocket.Conn) {
-		fmt.Println("joingame")
 		defer ws.Close()
 
 		token := c.QueryParam("token")
@@ -81,7 +77,6 @@ func joinGame(c echo.Context) error {
 		playGame(c, ws, games[token].Chanel2, games[token].Chanel1)
 
 	}).ServeHTTP(c.Response(), c.Request())
-	fmt.Println("joingame salida")
 	return nil
 }
 
