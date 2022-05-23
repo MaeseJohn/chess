@@ -76,6 +76,7 @@ ws.onmessage = function(evt) {
     let pieceSquare = BOARD.getSquareFromFileRank(serverData.pieceSquare.charAt(0), serverData.pieceSquare.charAt(1))
     let destinationSquare = BOARD.getSquareFromFileRank(serverData.destinationSquare.charAt(0), serverData.destinationSquare.charAt(1))
   
+    
     if(serverData.promotion)
     {
       let piece;
@@ -103,8 +104,16 @@ ws.onmessage = function(evt) {
       }
       pieceSquare.setPiece(piece);
     }
-  
-    BOARD.movePiece(pieceSquare, destinationSquare)
+
+    if(serverData.castling)
+    {
+      BOARD.castlingMove(pieceSquare, destinationSquare);
+    }
+    else
+    {
+      BOARD.movePiece(pieceSquare, destinationSquare)
+    }
+    
     changeTurn();
   
     let king;

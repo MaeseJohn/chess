@@ -23,14 +23,16 @@ class King extends Piece
         {
             if(castlingColor.queenRook)
             {
+                let tmp = 0;
                 destinationSquare = board.calculatePosition(square.getName(), DIRECTION_VALUE.LEFT);
                 while(destinationSquare.isEmpty() && destinationSquare.getName() != 'outOfBoard')
                 {
-                    if(kingInCheck(destinationSquare).length != 0)
+                    if(kingInCheck(destinationSquare).length != 0 && tmp < 2)
                     {
                         break
                     }
                     destinationSquare = board.calculatePosition(destinationSquare.getName(), DIRECTION_VALUE.LEFT);
+                    tmp++;
                 }
                 
                 if(destinationSquare.getName() != 'outOfBoard' && !destinationSquare.isEmpty())
@@ -97,7 +99,4 @@ class King extends Piece
         validMovements = this.#castling(board, square).concat(validMovements); 
         return validMovements; 
     }
-
-
-    
 }
