@@ -7,9 +7,8 @@ import (
 )
 
 type Game struct {
-	Chanel1     chan ChessData
-	Chanel2     chan ChessData
-	PlayerColor string
+	Chanel1 chan ChessData
+	Chanel2 chan ChessData
 }
 
 func (game *Game) closeGame() {
