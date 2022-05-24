@@ -5,7 +5,7 @@ const LIGHT_BROWN = "#dbb779";
 const DARK_BROWN  = "#452a1e";
 const GREEN       = 'rgb(75,130,50,.7)';
 const queryString = window.location.search
-let playerColor;
+let playerColor = "";
 let token;
 
 const WIN_MODAL            = document.getElementById("winmodal");
@@ -66,7 +66,7 @@ ws.onmessage = function(evt) {
 
   let serverData = JSON.parse(evt.data)
   
-  if(serverData.playerColor != "")
+  if(serverData.playerColor != "" && playerColor == "")
   {
     playerColor = serverData.playerColor
   }
