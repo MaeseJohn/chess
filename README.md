@@ -24,7 +24,7 @@ We can find the following classes:
 - **Piece:** every piece type such as Pawn or Queen has its own class, this is the base class. It  contains the color, type and image src. It also contains the necessary functions to find the king and limit the piece movements acording to the king positions.
 
 
-- **Square:** this class represents squares in the board. This class contains attributes such as the name (Here we have 2 option: common name like 'A1', 'G5' or 'outOfBoar', this is explained in Board class), color and the piece that is sat on it (null in case there is no piece on it).
+- **Square:** this class represents squares in the board. This class contains attributes such as the name (Here we have 2 option: common name like 'A1', 'G5' or 'outOfBoard', this is explained in Board class), color and the piece that is sat on it (null in case there is no piece on it).
 
 
 - **Board:** the board class is responsible for everything related to the board like managing the array of squares, drawing the board and piece with its movements as well as removing the pieces once they are moved.
