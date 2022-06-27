@@ -9,7 +9,7 @@ The main goal of this project is to develop a chess game engine in vanilla javas
 
 #### Technologies summary
 
-- **Frontend:** Vanilla JavaScript, Object-oriented programming Object-Oriented Programming, WebSockets, HTML, CSS
+- **Frontend:** Vanilla JavaScript, Object-oriented programming, WebSockets, HTML, CSS
 
 - **Backend:** Golang1.17, Object-Oriented Programming, Goroutines, Channels, x/net/websockets, EchoV4.
 
