@@ -29,7 +29,7 @@ We can find the following classes:
 
 - **Board:** the board class is responsible for everything related to the board like managing the array of squares, drawing the board and piece with its movements as well as removing the pieces once they are moved.
 
-	The board is make of an array of squares. This array contains 120 squares instead of the usual 64 (8x8) squares. This allows us to treat moves as addition or subtraction of integers in the array.This allows us to manage moves easier since this way we do not need to explicitly take into account borders when checking if a movement is allowed.
+	The board is made of an array of squares. This array contains 120 squares instead of the usual 64 (8x8) squares. This allows us to treat moves as addition or subtraction of integers in the array.This allows us to manage moves easier since this way we do not need to explicitly take into account borders when checking if a movement is allowed.
 
 
 - **Gamecontroller:** the gamecontroller is responsible for managing the game through events. In it, there are functions to manage the rules of the game, like those that check if the king is in check or checkmate, the change of turn, etc and game events like promotions or the click event to move the pieces. There are also functions that control the sending and receiving of data via websockets.
