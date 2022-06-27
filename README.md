@@ -9,7 +9,7 @@ The main goal of this project is to develop a chess game engine in vanilla javas
 
 #### Technologies summary
 
-- ** Frontend:** Vanilla JavaScript, Object-oriented programming Object-Oriented Programming, WebSockets, HTML, CSS
+- **Frontend:** Vanilla JavaScript, Object-oriented programming Object-Oriented Programming, WebSockets, HTML, CSS
 
 - **Backend:** Golang1.17, Object-Oriented Programming, Goroutines, Channels, x/net/websockets, EchoV4.
 
@@ -17,11 +17,11 @@ The main goal of this project is to develop a chess game engine in vanilla javas
 
 
 
-###Frontend
+### Frontend
 
 We can find the following classes:
 
-- ** Piece: ** every piece type such as Pawn or Queen has its own class, this is the base class. It  contains the color, type and image src. It also contains the necessary functions to find the king and limit the piece movements acording to the king position.
+- **Piece:** every piece type such as Pawn or Queen has its own class, this is the base class. It  contains the color, type and image src. It also contains the necessary functions to find the king and limit the piece movements acording to the king position.
 
 
 - **Square:** this class represents squares in the board. This class contains attributes such as the name (Here we have 2 option: common name like 'A1', 'G5' or 'outOfBoar', this is explained in Board class), color and the piece the piece that is sat on it (null in case there is no piece on it).
@@ -38,7 +38,7 @@ We can find the following classes:
 ------------
 
 
-###Backend
+### Backend
 On this side we find the following types:
 
 - **Games:** this is a map of 'Game'
@@ -47,7 +47,7 @@ On this side we find the following types:
 
 - **ChessData:** this is the data structure containing the possible variables that might be sent/received through WebSockets during a game.
  
-#####How it works?
+##### How it works?
 
 Regarding the behavior of the backend, it should be noted that... we have 2 handler functions: 'createGame' and 'joinGame. Depending on the url we used to enter the web, the frondend changes the url for the websocket connection. That url tells the server what handler function it should use to create the connection between the client and the server.
 
