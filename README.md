@@ -1,7 +1,7 @@
 # Chess
 
 ## Description
-The main goal of this project is to develop a chess game engine in vanilla javascript in  order to learn and practice how to manage dom events, objects and websockets communications.
+The main goal of this project is to develop a chess game engine in Vanilla Javascript in  order to learn and practice how to manage DOM events, objects and Websockets communications.
 
 > The backend is developed in Golang, with EchoV4. The 'why' behind of using Golang as programming language for backend is to learn the language itself as well as its well known and powerful features such as Goroutines.
 
@@ -21,10 +21,10 @@ The main goal of this project is to develop a chess game engine in vanilla javas
 
 We can find the following classes:
 
-- **Piece:** every piece type such as Pawn or Queen has its own class, this is the base class. It  contains the color, type and image src. It also contains the necessary functions to find the king and limit the piece movements acording to the king position.
+- **Piece:** every piece type such as Pawn or Queen has its own class, this is the base class. It  contains the color, type and image src. It also contains the necessary functions to find the king and limit the piece movements acording to the king positions.
 
 
-- **Square:** this class represents squares in the board. This class contains attributes such as the name (Here we have 2 option: common name like 'A1', 'G5' or 'outOfBoar', this is explained in Board class), color and the piece the piece that is sat on it (null in case there is no piece on it).
+- **Square:** this class represents squares in the board. This class contains attributes such as the name (Here we have 2 option: common name like 'A1', 'G5' or 'outOfBoar', this is explained in Board class), color and the piece that is sat on it (null in case there is no piece on it).
 
 
 - **Board:** the board class is responsible for everything related to the board like managing the array of squares, drawing the board and piece with its movements as well as removing the pieces once they are moved.
