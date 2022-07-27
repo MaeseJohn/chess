@@ -46,8 +46,10 @@ On this side we find the following types:
 - **Game:** represents a game on the server side. It has 2 channels that are used to comunicate the goroutines of the players.
 
 - **ChessData:** this is the data structure containing the possible variables that might be sent/received through WebSockets during a game.
- 
-##### How it works?
+
+------------
+
+### How it works?
 
 Regarding the behavior of the backend, it should be noted that we have 2 handler functions: `createGame` and `joinGame`. Depending on the url we used to enter the web, the frondend changes the url for the websocket connection. That url tells the server what handler function it should use to create the connection between the client and the server.
 
