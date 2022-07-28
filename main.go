@@ -120,7 +120,7 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Static("/", "public")
+	e.Static("/", "Public")
 	e.GET("/createGame", createGame)
 	e.GET("/joinGame", joinGame)
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%s", port)))
