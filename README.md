@@ -1,15 +1,15 @@
 # Chess
 
 ## Description
-The main goal of this project is to develop a chess game engine in vanilla javascript in  order to learn and practice how to manage dom events, objects and websockets communications.
+The main goal of this project is to develop a chess game engine in Vanilla Javascript in  order to learn and practice how to manage DOM events, objects and Websockets communications.
 
-> The backend is developed in Golang, with EchoV4. The 'why' behind of using Golang as programming language for backend is to learn the language itself as well as its well known and powerful features such as Goroutines.
+The backend is developed in Golang, with EchoV4. The 'why' behind of using Golang as programming language for backend is to learn the language itself as well as its well known and powerful features such as Goroutines.
 
 
 
 #### Technologies summary
 
-- ** Frontend:** Vanilla JavaScript, Object-oriented programming Object-Oriented Programming, WebSockets, HTML, CSS
+- **Frontend:** Vanilla JavaScript, Object-oriented programming, WebSockets, HTML, CSS
 
 - **Backend:** Golang1.17, Object-Oriented Programming, Goroutines, Channels, x/net/websockets, EchoV4.
 
@@ -17,19 +17,19 @@ The main goal of this project is to develop a chess game engine in vanilla javas
 
 
 
-###Frontend
+### Frontend
 
 We can find the following classes:
 
-- ** Piece: ** every piece type such as Pawn or Queen has its own class, this is the base class. It  contains the color, type and image src. It also contains the necessary functions to find the king and limit the piece movements acording to the king position.
+- **Piece:** every piece type such as Pawn or Queen has its own class, this is the base class. It  contains the color, type and image src. It also contains the necessary functions to find the king and limit the piece movements acording to the king positions.
 
 
-- **Square:** this class represents squares in the board. This class contains attributes such as the name (Here we have 2 option: common name like 'A1', 'G5' or 'outOfBoar', this is explained in Board class), color and the piece the piece that is sat on it (null in case there is no piece on it).
+- **Square:** this class represents squares in the board. This class contains attributes such as the name (Here we have 2 option: common name like 'A1', 'G5' or 'outOfBoard', this is explained in Board class), color and the piece that is sat on it (null in case there is no piece on it).
 
 
 - **Board:** the board class is responsible for everything related to the board like managing the array of squares, drawing the board and piece with its movements as well as removing the pieces once they are moved.
 
-	The board is make of an array of squares. This array contains 120 squares instead of the usual 64 (8x8) squares. This allows us to treat moves as addition or subtraction of integers in the array.This allows us to manage moves easier since this way we do not need to explicitly take into account borders when checking if a movement allowed.
+	The board is made of an array of squares. This array contains 120 squares instead of the usual 64 (8x8) squares. This allows us to treat moves as addition or subtraction of integers in the array. This allows us to manage moves easier since this way we do not need to explicitly take into account borders when checking if a movement is allowed.
 
 
 - **Gamecontroller:** the gamecontroller is responsible for managing the game through events. In it, there are functions to manage the rules of the game, like those that check if the king is in check or checkmate, the change of turn, etc and game events like promotions or the click event to move the pieces. There are also functions that control the sending and receiving of data via websockets.
@@ -38,24 +38,26 @@ We can find the following classes:
 ------------
 
 
-###Backend
+### Backend
 On this side we find the following types:
 
-- **Games:** this is a map of 'Game'
+- **Games:** this is a map of `Game`
 
 - **Game:** represents a game on the server side. It has 2 channels that are used to comunicate the goroutines of the players.
 
 - **ChessData:** this is the data structure containing the possible variables that might be sent/received through WebSockets during a game.
- 
-#####How it works?
 
-Regarding the behavior of the backend, it should be noted that... we have 2 handler functions: 'createGame' and 'joinGame. Depending on the url we used to enter the web, the frondend changes the url for the websocket connection. That url tells the server what handler function it should use to create the connection between the client and the server.
+------------
 
-- In the case we call 'createGame', it creates a 'Game' object and inserts it into the 'Games' map using the token passed through the url as a key. It also gives the white color to the first player and call the 'playGame' function which we will talk about later.
+### How it works?
 
-- Player two must use the url generated by player one. This url call  'joinGame' handler function. This function gets the 'token' query parameter and uses it as the key to obtain the 'Game' object from the 'Games' map. Once  this is done it will call the function 'playGame'.
+Regarding the behavior of the backend, it should be noted that we have 2 handler functions: `createGame` and `joinGame`. Depending on the url we used to enter the web, the frondend changes the url for the websocket connection. That url tells the server what handler function it should use to create the connection between the client and the server.
 
-As we saw earlier, 'playGame' is called by both handlers. This function is responsible for communicating both players through goroutines.
+- In the case we call 'createGame', it creates a `Game` object and inserts it into the `Games` map using the token passed through the url as a key. It also gives the white color to the first player and call the `playGame` function which we will talk about later.
+
+- Player two must use the url generated by player one. This url call  `joinGame` handler function. This function gets the token query parameter and uses it as the key to obtain the `Game` object from the `Games` map. Once  this is done it will call the function `playGame`.
+
+As we saw earlier, `playGame` is called by both handlers. This function is responsible for communicating both players through goroutines.
 
 
 
