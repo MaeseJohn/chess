@@ -121,7 +121,7 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Static("/", "public")
-	e.GET("/ws", createGame)
-	e.GET("/ws2", joinGame)
+	e.GET("/createGame", createGame)
+	e.GET("/joinGame", joinGame)
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%s", port)))
 }

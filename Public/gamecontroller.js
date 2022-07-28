@@ -37,18 +37,21 @@ function makeUri()
 
   
   let loc = window.location;
-  let uri = 'ws:';
+  let uri;
+
+  uri = loc.href.charAt(4) == 's' ? 'wss:' : 'ws:'
+
   uri += '//' + loc.host;
-  let q;
   
+  let q;
   if(queryString == '')
   {
     token = tokengenerator()
-    q = 'ws' + '?token=' + token
+    q = 'createGame' + '?token=' + token
   }
   else
   {
-    q = 'ws2' + queryString
+    q = 'joinGame' + queryString
   }
   uri += loc.pathname + q 
   
