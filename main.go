@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/labstack/echo/middleware"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/net/websocket"
 )
@@ -113,19 +112,13 @@ func playGame(c echo.Context, ws *websocket.Conn, canal1 chan ChessData, canal2 
 
 var games = make(map[string]*Game)
 
-var (
-	port = os.Getenv("PORT")
-)
-
 func main() {
 
-	if len(port) <= 0 {
-		port = "8080"
-	}
+	port := os.Getenv("PORT")
 
 	e := echo.New()
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	//e.Use(middleware.Logger())
+	//e.Use(middleware.Recover())
 	e.Static("/", "public")
 	e.GET("/ws", createGame)
 	e.GET("/ws2", joinGame)
