@@ -17,12 +17,14 @@ const BISHOP_PROMOTION_IMG = document.getElementById("bishopimg");
 const QUEEN_PROMOTION_IMG  = document.getElementById("queenimg");
 const LINK_BUTTON          = document.getElementById("linkButton");
 
-console.log(queryString);
+
 LINK_BUTTON.onclick = function ()
 {
   let copyurl = `http://localhost:8080/?token=${token}`
   navigator.clipboard.writeText(copyurl);
 }
+
+const host = window.location.host
 
 function makeUri()
 {
@@ -35,10 +37,7 @@ function makeUri()
     return rand() + rand(); // to make it longer
   };
 
-  
-  let loc = window.location;
-  let uri = 'ws:';
-  uri += '//' + loc.host;
+  let uri = host;
   let q;
   
   if(queryString == '')
