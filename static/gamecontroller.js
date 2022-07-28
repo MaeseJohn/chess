@@ -20,7 +20,7 @@ const LINK_BUTTON          = document.getElementById("linkButton");
 console.log(queryString);
 LINK_BUTTON.onclick = function ()
 {
-  let copyurl = `http://localhost:8080/?token=${token}`
+  let copyurl = winmodal.loc.host + token
   navigator.clipboard.writeText(copyurl);
 }
 
