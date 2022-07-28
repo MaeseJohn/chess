@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/labstack/echo/middleware"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/net/websocket"
 )
@@ -123,8 +124,8 @@ func main() {
 	}
 
 	e := echo.New()
-	//e.Use(middleware.Logger())
-	//e.Use(middleware.Recover())
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 	e.Static("/", "public")
 	e.GET("/ws", createGame)
 	e.GET("/ws2", joinGame)
