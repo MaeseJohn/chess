@@ -20,7 +20,7 @@ const LINK_BUTTON          = document.getElementById("linkButton");
 console.log(queryString);
 LINK_BUTTON.onclick = function ()
 {
-  let copyurl = winmodal.loc.href + token
+  let copyurl = window.location.href + '?token=' + token;
   navigator.clipboard.writeText(copyurl);
 }
 
