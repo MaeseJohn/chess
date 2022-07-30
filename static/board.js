@@ -189,7 +189,6 @@ class Board
     {
         this.#ctx.fillStyle = color;
         this.#ctx.fillRect(x * this.#squaresize, y * this.#squaresize, this.#squaresize, this.#squaresize);  
-        console.log(this.#squaresize)
     }
     
     #setStartPiecesPos()
@@ -239,9 +238,6 @@ class Board
 
     initBoard()
     {
-
-        //this.#cv.style.width  = SQUARE_SIZE * 8 + 'px'
-        //this.#cv.style.height = SQUARE_SIZE * 8 + 'px'
 
         for(var i = 0; i < this.#squares.length; i++)
         {

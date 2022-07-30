@@ -9,15 +9,15 @@ let playerColor = "";
 let token;
 let ws;
 
-const WIN_MODAL            = document.getElementById("winmodal");
-const WIN_MODAL_TEXT       = document.getElementById("wintext");
+const MODAL_TEXT_DIV       = document.getElementById("modaltextdiv");
+const MODAL_TEXT           = document.getElementById("modaltext");
 const PROMOTION            = document.getElementById("modal");
 const ROOK_PROMOTION_IMG   = document.getElementById("rookimg");
 const KNIGHT_PROMOTION_IMG = document.getElementById("knightimg");
 const BISHOP_PROMOTION_IMG = document.getElementById("bishopimg");
 const QUEEN_PROMOTION_IMG  = document.getElementById("queenimg");
-const LINK_BUTTON          = document.getElementById("linkButton");
-const NEW_GAME_BUTTON      = document.getElementById("newGameButton")
+const LINK_BUTTON          = document.getElementById("linkbutton");
+const NEW_GAME_BUTTON      = document.getElementById("newgamebutton")
 
 
 
@@ -27,13 +27,57 @@ LINK_BUTTON.onclick = function ()
 {
   let copyurl = window.location.href + '?token=' + token;
   navigator.clipboard.writeText(copyurl);
+  copylinkmodal();
 }
 
 NEW_GAME_BUTTON.onclick = function ()
 {
-  let uri = makeUri();
+  websocketconection()
+  newgamemodal();
+}
+
+// MODAL FUNCTIONSS //
+
+function newgamemodal()
+{
+  MODAL_TEXT.textContent = 'Click on "Copy link" to obtain the share link.';
+  MODAL_TEXT_DIV.style.display = "inline-block";
+}
+
+function copylinkmodal()
+{
+  MODAL_TEXT.textContent = 'The share link has been copied to your clipboard.';
+  MODAL_TEXT_DIV.style.display = "inline-block";
+}
+
+function winmodal()
+{
+  let wincolor;
+  turn == "white" ? wincolor = "BLACK" : wincolor = "WHITE"; 
+  MODAL_TEXT.textContent = wincolor + " WIN";
+  MODAL_TEXT_DIV.style.display = "inline-block";
+}
+
+function hidemodal()
+{
+  MODAL_TEXT_DIV.style.display = "none";
+}
+
+MODAL_TEXT_DIV.addEventListener('click', hidemodal);
+
+// WEBSOCKET FUNCTIONS //
+
+let uri = makeUri();
+
+if(queryString != '')
+{
+  websocketconection()
+}
+
+function websocketconection()
+{
   ws = new WebSocket(uri)
-  
+
   ws.onopen = function() {
     console.log('Connected')
   }
@@ -109,8 +153,6 @@ NEW_GAME_BUTTON.onclick = function ()
   }
 }
 
-// WEBSOCKET FUNCTIONS //
-
 function makeUri()
 {
   //CREATING A TOKEN  
@@ -146,7 +188,6 @@ function makeUri()
 }
 
 
-
 //  CREATE BOARD //
 const BOARD = new Board(BOAR_SIZE, SQUARE_SIZE, LIGHT_BROWN, DARK_BROWN);
 BOARD.initBoard();
@@ -172,22 +213,6 @@ let blackCastling = {
   queenRook: true,
   kingRook: true,
 }
-
-// WIN FUNCTIONS //
-function winmodal()
-{
-  let wincolor;
-  turn == "white" ? wincolor = "BLACK" : wincolor = "WHITE"; 
-  WIN_MODAL_TEXT.textContent = wincolor + " WIN";
-  WIN_MODAL.style.display = "flex";
-}
-
-function winevent()
-{
-  WIN_MODAL.style.display = "none";
-}
-WIN_MODAL.addEventListener('click', winevent);
-
 
 // CHECK FUNCTIONS //
 function kingInCheck(king)
