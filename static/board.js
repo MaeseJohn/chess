@@ -94,8 +94,8 @@ class Board
     #boardClickEvent(evt)
     {
         let rect = this.#cv.getBoundingClientRect();
-        let x = Math.trunc(Math.round(evt.clientX - rect.left) / 100);
-        let y = Math.trunc(Math.round(evt.clientY - rect.top) / 100);
+        let x = Math.trunc(Math.round(evt.clientX - rect.left) / 95);
+        let y = Math.trunc(Math.round(evt.clientY - rect.top) / 95);
         let square = this.getSquare(x, y);
 
         window.dispatchEvent(new CustomEvent('boardClick', { detail: square }));
@@ -189,6 +189,7 @@ class Board
     {
         this.#ctx.fillStyle = color;
         this.#ctx.fillRect(x * this.#squaresize, y * this.#squaresize, this.#squaresize, this.#squaresize);  
+        console.log(this.#squaresize)
     }
     
     #setStartPiecesPos()
@@ -238,6 +239,10 @@ class Board
 
     initBoard()
     {
+
+        //this.#cv.style.width  = SQUARE_SIZE * 8 + 'px'
+        //this.#cv.style.height = SQUARE_SIZE * 8 + 'px'
+
         for(var i = 0; i < this.#squares.length; i++)
         {
             this.#squares[i]= new Square();

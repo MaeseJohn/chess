@@ -5,7 +5,7 @@
     <title>Tablero</title>
     <style>
       #canvas{
-        margin: 100px;
+        margin-top: 1%;
         box-shadow:10px 10px 10px black;
         border-radius: 1%;
         display: inline-block;
@@ -13,6 +13,7 @@
 
       body{
         background-color: #17202A;
+        text-align: center;
       }
 
       .modal{
@@ -57,20 +58,18 @@
       }
 
       .buttons{
-        display: inline-block;
-        position: absolute;
-        margin-top: 300px;
+        display: block;
+        margin-top: 1%;
       }
 
       .buttons > button{
         background-color: #4CAF50;
         border: 2px solid black;
         color: black;
-        height: 100px;
-        width: 500px;
+        height: 50px;
+        width: 400px;
         text-align: center;
         text-decoration: none;
-        display: block;
         font-size: 25px;
         margin: 20px 10px;
         cursor: pointer;
@@ -95,10 +94,11 @@
       </div>
     </div>
 
-    <canvas id="canvas" width="800" height="800"></canvas>
-  
+    <canvas id="canvas" width="760" height="760"></canvas>
+
     <div id="buttons" class="buttons">
-      <button id="linkButton">Player 2 Link</button>
+      <button id="newGameButton">New game</button>
+      <button id="linkButton">Invite player 2</button>
     </div>
 
     <script src="square.js"></script>

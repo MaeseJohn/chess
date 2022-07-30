@@ -1,12 +1,13 @@
-const SQUARE_SIZE = 100; // In pixels
+const SQUARE_SIZE = 95; // In pixels
 const BOAR_SIZE   = 8;  // Namber of squares in a row and column
-const PIECES_SIZE = 100; // In pixels
+const PIECES_SIZE = 95; // In pixels
 const LIGHT_BROWN = "#dbb779";
 const DARK_BROWN  = "#452a1e";
 const GREEN       = 'rgb(75,130,50,.7)';
 const queryString = window.location.search
 let playerColor = "";
 let token;
+let ws;
 
 const WIN_MODAL            = document.getElementById("winmodal");
 const WIN_MODAL_TEXT       = document.getElementById("wintext");
@@ -16,13 +17,99 @@ const KNIGHT_PROMOTION_IMG = document.getElementById("knightimg");
 const BISHOP_PROMOTION_IMG = document.getElementById("bishopimg");
 const QUEEN_PROMOTION_IMG  = document.getElementById("queenimg");
 const LINK_BUTTON          = document.getElementById("linkButton");
+const NEW_GAME_BUTTON      = document.getElementById("newGameButton")
 
-console.log(queryString);
+
+
+
+// BUTTONS //
 LINK_BUTTON.onclick = function ()
 {
   let copyurl = window.location.href + '?token=' + token;
   navigator.clipboard.writeText(copyurl);
 }
+
+NEW_GAME_BUTTON.onclick = function ()
+{
+  let uri = makeUri();
+  ws = new WebSocket(uri)
+  
+  ws.onopen = function() {
+    console.log('Connected')
+  }
+  
+  ws.onmessage = function(evt) {
+  
+    let serverData = JSON.parse(evt.data)
+    
+    if(serverData.playerColor != "" && playerColor == "")
+    {
+      playerColor = serverData.playerColor
+    }
+  
+    if(serverData.pieceSquare != "" && serverData.destinationSquare != "")
+    {
+      let pieceSquare = BOARD.getSquareFromFileRank(serverData.pieceSquare.charAt(0), serverData.pieceSquare.charAt(1))
+      let destinationSquare = BOARD.getSquareFromFileRank(serverData.destinationSquare.charAt(0), serverData.destinationSquare.charAt(1))
+    
+      
+      if(serverData.promotion)
+      {
+        let piece;
+        switch(serverData.promotionChoice)
+        {
+          case "rook":
+            piece = new Rook(turn);
+            break;
+    
+          case "knight":
+            piece = new Knight(turn);
+            break;
+    
+          case "bishop":
+            piece = new Bishop(turn);
+            break;
+    
+          case "queen":
+            piece = new Queen(turn);
+            break;
+          
+          default:
+            console.log("Default switch case");
+            break;
+        }
+        pieceSquare.setPiece(piece);
+      }
+  
+      if(serverData.castling)
+      {
+        BOARD.castlingMove(pieceSquare, destinationSquare);
+      }
+      else
+      {
+        BOARD.movePiece(pieceSquare, destinationSquare)
+      }
+      
+      changeTurn();
+    
+      let king;
+      turn == "white" ? king = whiteKing : king = blackKing;
+      checks = kingInCheck(king);
+    
+      if(serverData.checkmate && checkMate())
+      {
+        let finish = {
+          finish: true
+        }
+        winmodal();
+        ws.send(JSON.stringify(finish))
+      }
+    }
+  
+  }
+}
+
+// WEBSOCKET FUNCTIONS //
 
 function makeUri()
 {
@@ -58,92 +145,18 @@ function makeUri()
   return uri;
 }
 
-let uri = makeUri();
-ws = new WebSocket(uri)
 
-ws.onopen = function() {
-  console.log('Connected')
-}
 
-ws.onmessage = function(evt) {
+//  CREATE BOARD //
+const BOARD = new Board(BOAR_SIZE, SQUARE_SIZE, LIGHT_BROWN, DARK_BROWN);
+BOARD.initBoard();
 
-  let serverData = JSON.parse(evt.data)
-  
-  if(serverData.playerColor != "" && playerColor == "")
-  {
-    playerColor = serverData.playerColor
-  }
-
-  if(serverData.pieceSquare != "" && serverData.destinationSquare != "")
-  {
-    let pieceSquare = BOARD.getSquareFromFileRank(serverData.pieceSquare.charAt(0), serverData.pieceSquare.charAt(1))
-    let destinationSquare = BOARD.getSquareFromFileRank(serverData.destinationSquare.charAt(0), serverData.destinationSquare.charAt(1))
-  
-    
-    if(serverData.promotion)
-    {
-      let piece;
-      switch(serverData.promotionChoice)
-      {
-        case "rook":
-          piece = new Rook(turn);
-          break;
-  
-        case "knight":
-          piece = new Knight(turn);
-          break;
-  
-        case "bishop":
-          piece = new Bishop(turn);
-          break;
-  
-        case "queen":
-          piece = new Queen(turn);
-          break;
-        
-        default:
-          console.log("Default switch case");
-          break;
-      }
-      pieceSquare.setPiece(piece);
-    }
-
-    if(serverData.castling)
-    {
-      BOARD.castlingMove(pieceSquare, destinationSquare);
-    }
-    else
-    {
-      BOARD.movePiece(pieceSquare, destinationSquare)
-    }
-    
-    changeTurn();
-  
-    let king;
-    turn == "white" ? king = whiteKing : king = blackKing;
-    checks = kingInCheck(king);
-  
-    if(serverData.checkmate && checkMate())
-    {
-      let finish = {
-        finish: true
-      }
-      winmodal();
-      ws.send(JSON.stringify(finish))
-    }
-  }
-
-}
-
+// GAME VARIABLES //
 let turn = "white";
 let pieceWasClicked = false;
 let actualSquare;
 let clickedSquare;
 let validMovements;
-
-const BOARD = new Board(BOAR_SIZE, SQUARE_SIZE, LIGHT_BROWN, DARK_BROWN);
-BOARD.initBoard();
-
 let checks = [];
 let whiteKing = BOARD.getSquareFromFileRank("E", "1");
 let blackKing = BOARD.getSquareFromFileRank("E", "8");
@@ -160,27 +173,23 @@ let blackCastling = {
   kingRook: true,
 }
 
-function changeTurn()
+// WIN FUNCTIONS //
+function winmodal()
 {
-  turn === "white" ? turn = "black" : turn = "white";
+  let wincolor;
+  turn == "white" ? wincolor = "BLACK" : wincolor = "WHITE"; 
+  WIN_MODAL_TEXT.textContent = wincolor + " WIN";
+  WIN_MODAL.style.display = "flex";
 }
 
-function drawMovemets()
+function winevent()
 {
-  if(!actualSquare.isEmpty())
-  {
-    if(actualSquare.getPiece().getColor() === turn)
-    {
-      validMovements = actualSquare.getPiece().getValidMovements(BOARD, actualSquare);
-      BOARD.drawValidMovements(validMovements);
-      clickedSquare = actualSquare;
-      pieceWasClicked = true;
-      return true;
-    }
-  }
-  return false;
+  WIN_MODAL.style.display = "none";
 }
+WIN_MODAL.addEventListener('click', winevent);
 
+
+// CHECK FUNCTIONS //
 function kingInCheck(king)
 {
   let destinationSquare;
@@ -251,20 +260,7 @@ function checkMate()
   return false;
 }
 
-function winmodal()
-{
-  let wincolor;
-  turn == "white" ? wincolor = "BLACK" : wincolor = "WHITE"; 
-  WIN_MODAL_TEXT.textContent = wincolor + " WIN";
-  WIN_MODAL.style.display = "flex";
-}
-
-function winevent()
-{
-  WIN_MODAL.style.display = "none";
-}
-WIN_MODAL.addEventListener('click', winevent);
-
+// PROMOTION //
 function promotion()
 { 
   if(clickedSquare.getPiece().getType() != "pawn")
@@ -378,6 +374,28 @@ window.addEventListener('PromotionChoice', evt =>
   clickedSquare   = undefined;
 
 })
+
+// COMUN FUNCTIONS //
+function changeTurn()
+{
+  turn === "white" ? turn = "black" : turn = "white";
+}
+
+function drawMovemets()
+{
+  if(!actualSquare.isEmpty())
+  {
+    if(actualSquare.getPiece().getColor() === turn)
+    {
+      validMovements = actualSquare.getPiece().getValidMovements(BOARD, actualSquare);
+      BOARD.drawValidMovements(validMovements);
+      clickedSquare = actualSquare;
+      pieceWasClicked = true;
+      return true;
+    }
+  }
+  return false;
+}
 
 window.addEventListener('boardClick', evt =>
 {
