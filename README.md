@@ -5,7 +5,7 @@ The main goal of this project is to develop a chess game engine in Vanilla Javas
 
 The backend is developed in Golang, with EchoV4. The 'why' behind of using Golang as programming language for backend is to learn the language itself as well as its well known and powerful features such as Goroutines.
 
-
+[Play chess.](https://chess-go.herokuapp.com/)
 
 #### Technologies summary
 
