@@ -17,9 +17,7 @@ const KNIGHT_PROMOTION_IMG = document.getElementById("knightimg");
 const BISHOP_PROMOTION_IMG = document.getElementById("bishopimg");
 const QUEEN_PROMOTION_IMG  = document.getElementById("queenimg");
 const LINK_BUTTON          = document.getElementById("linkbutton");
-const NEW_GAME_BUTTON      = document.getElementById("newgamebutton")
-
-
+const NEW_GAME_BUTTON      = document.getElementById("newgamebutton");
 
 
 // BUTTONS //
@@ -32,7 +30,9 @@ LINK_BUTTON.onclick = function ()
 
 NEW_GAME_BUTTON.onclick = function ()
 {
-  websocketconection()
+  BOARD.initBoard();
+  uri = makeUri();
+  websocketconection();
   newgamemodal();
 }
 
@@ -309,25 +309,28 @@ PROMOTION.addEventListener('click', promotionEvent);
 
 function promotionEvent(evt)
 {
-  let rect = PROMOTION.getBoundingClientRect()
+  let promotioncontent = document.getElementById('modalcontent');
+  let rect = promotioncontent.getBoundingClientRect()
   let x = evt.clientX - rect.left;
   let y = evt.clientY - rect.top;
+  console.log(rect)
+  console.log(x, y)
 
   let choice;
   
-  if(x > 200 && x < 350 && y > 425 && y < 575)
+  if(x > 0 && x < 150 && y > 0 && y < 150)
   {
     choice = "rook";
   }
-  if(x > 350 && x < 500 && y > 425 && y < 575)
+  if(x > 150 && x < 300 && y > 0 && y < 150)
   {
     choice = "knight";
   }
-  if(x > 500 && x < 650 && y > 425 && y < 575)
+  if(x > 300 && x < 450 && y > 0 && y < 150)
   {
     choice = "bishop";
   }
-  if(x > 650 && x < 800 && y > 425 && y < 575)
+  if(x > 450 && x < 600 && y > 0 && y < 150)
   {
     choice = "queen";
   }
