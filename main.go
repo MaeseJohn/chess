@@ -23,6 +23,7 @@ type ChessData struct {
 	Castling          bool   `json:"castling"`
 	Checkmate         bool   `json:"checkmate"`
 	Promotion         bool   `json:"promotion"`
+	Player2           bool   `json:"player2"`
 	Finish            bool   `json:"finish"`
 	Turn              string `json:"turn"`
 	PieceSquare       string `json:"pieceSquare"`
@@ -67,7 +68,14 @@ func joinGame(c echo.Context) error {
 		token := c.QueryParam("token")
 		playerColor := ChessData{
 			PlayerColor: "black",
+			Player2:     true,
 		}
+
+		data := ChessData{
+			Player2: true,
+		}
+
+		games[token].Chanel2 <- data
 
 		err := websocket.JSON.Send(ws, &playerColor)
 		if err != nil {
@@ -82,7 +90,7 @@ func joinGame(c echo.Context) error {
 
 func playGame(c echo.Context, ws *websocket.Conn, canal1 chan ChessData, canal2 chan ChessData) {
 	for {
-		// Write
+
 		go func() {
 			for {
 				data := <-canal2
@@ -94,7 +102,6 @@ func playGame(c echo.Context, ws *websocket.Conn, canal1 chan ChessData, canal2 
 			}
 		}()
 
-		// Read
 		data := ChessData{}
 		err := websocket.JSON.Receive(ws, &data)
 		if err != nil {

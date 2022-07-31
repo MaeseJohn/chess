@@ -5,7 +5,7 @@ const LIGHT_BROWN = "#dbb779";
 const DARK_BROWN  = "#452a1e";
 const GREEN       = 'rgb(75,130,50,.7)';
 const queryString = window.location.search
-let playerColor = "";
+
 let token;
 let ws;
 
@@ -31,6 +31,7 @@ LINK_BUTTON.onclick = function ()
 NEW_GAME_BUTTON.onclick = function ()
 {
   BOARD.initBoard();
+  initGameVariables();
   uri = makeUri();
   websocketconection();
   newgamemodal();
@@ -71,7 +72,7 @@ let uri = makeUri();
 
 if(queryString != '')
 {
-  websocketconection()
+  websocketconection();
 }
 
 function websocketconection()
@@ -85,7 +86,12 @@ function websocketconection()
   ws.onmessage = function(evt) {
   
     let serverData = JSON.parse(evt.data)
-    
+
+    if(serverData.player2)
+    {
+      player2 = true;
+    }
+
     if(serverData.playerColor != "" && playerColor == "")
     {
       playerColor = serverData.playerColor
@@ -187,20 +193,37 @@ function makeUri()
   return uri;
 }
 
+// GAME VARIABLES //
+
+let turn;
+let pieceWasClicked;
+let actualSquare;
+let clickedSquare;
+let validMovements;
+let checks;
+let whiteKing;
+let blackKing;
+let playerColor;
+let player2;
+
+function initGameVariables()
+{
+  turn            = "white";
+  checks          = [];
+  player2         = false;
+  playerColor     = "";
+  pieceWasClicked = false;
+  actualSquare    = undefined;
+  clickedSquare   = undefined;
+  validMovements  = [];
+  whiteKing = BOARD.getSquareFromFileRank("E", "1");
+  blackKing = BOARD.getSquareFromFileRank("E", "8");
+}
 
 //  CREATE BOARD //
 const BOARD = new Board(BOAR_SIZE, SQUARE_SIZE, LIGHT_BROWN, DARK_BROWN);
 BOARD.initBoard();
-
-// GAME VARIABLES //
-let turn = "white";
-let pieceWasClicked = false;
-let actualSquare;
-let clickedSquare;
-let validMovements;
-let checks = [];
-let whiteKing = BOARD.getSquareFromFileRank("E", "1");
-let blackKing = BOARD.getSquareFromFileRank("E", "8");
+initGameVariables();
 
 let whiteCastling = {
   king: true,
@@ -439,7 +462,7 @@ window.addEventListener('boardClick', evt =>
     turn: "",
   }
 
-  if(playerColor != turn)
+  if(playerColor != turn || !player2)
   {
     return
   }

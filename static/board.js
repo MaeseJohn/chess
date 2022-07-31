@@ -162,6 +162,7 @@ class Board
 
         this.#printPiece(destinationSquare.getPiece().getSrc(), destinationCoordinates.x, destinationCoordinates.y);
         
+     
         if(destinationSquare.getPiece().getType() == "king")
         { 
             destinationSquare.getPiece().getColor() == "white" ? whiteKing = destinationSquare : blackKing = destinationSquare;
@@ -190,6 +191,38 @@ class Board
         this.#ctx.fillStyle = color;
         this.#ctx.fillRect(x * this.#squaresize, y * this.#squaresize, this.#squaresize, this.#squaresize);  
     }
+
+    #printPiece(src, x, y)
+    {
+        let img = new Image();
+        img.src = src;
+        //Async function
+        //img.decode();
+   
+        //Async function
+        img.onload = (() =>
+        {
+            this.#ctx.drawImage(img, x * this.#squaresize, y * this.#squaresize, this.#squaresize, this.#squaresize);
+        }).bind(this)
+    }
+
+    #printAllPieces()
+    { 
+        let coordinates = (f, r) => this.#squares[f + r].getCoordinatesFromName();
+      
+
+        for(var i = 0; i < 8; i++)
+        {
+            this.#printPiece(this.#squares[i + 21].getPiece().getSrc(), coordinates(i, 21).x, coordinates(i, 21).y);
+            this.#printPiece(this.#squares[i + 31].getPiece().getSrc(), coordinates(i, 31).x, coordinates(i, 31).y);
+        }
+    
+        for(var i = 0; i < 8; i++)
+        { 
+            this.#printPiece(this.#squares[i + 91].getPiece().getSrc(), coordinates(i, 91).x, coordinates(i, 91).y);
+            this.#printPiece(this.#squares[i + 81].getPiece().getSrc(), coordinates(i, 81).x, coordinates(i, 81).y);
+        }
+    }  
     
     #setStartPiecesPos()
     {
@@ -274,39 +307,7 @@ class Board
         //Async function
         this.#printAllPieces();
     }
-
-    #printPiece(src, x, y)
-    {
-        let img = new Image();
-        img.src = src;
-        //Async function
-        //img.decode();
    
-        //Async function
-        img.onload = (() =>
-        {
-            this.#ctx.drawImage(img, x * this.#squaresize, y * this.#squaresize, this.#squaresize, this.#squaresize);
-        }).bind(this)
-    }
-
-    #printAllPieces()
-    { 
-        let coordinates = (f, r) => this.#squares[f + r].getCoordinatesFromName();
-      
-
-        for(var i = 0; i < 8; i++)
-        {
-            this.#printPiece(this.#squares[i + 21].getPiece().getSrc(), coordinates(i, 21).x, coordinates(i, 21).y);
-            this.#printPiece(this.#squares[i + 31].getPiece().getSrc(), coordinates(i, 31).x, coordinates(i, 31).y);
-        }
-    
-        for(var i = 0; i < 8; i++)
-        { 
-            this.#printPiece(this.#squares[i + 91].getPiece().getSrc(), coordinates(i, 91).x, coordinates(i, 91).y);
-            this.#printPiece(this.#squares[i + 81].getPiece().getSrc(), coordinates(i, 81).x, coordinates(i, 81).y);
-        }
-    }  
-
     calculatePosition(squareName, direction)
     {
         let squareIndex = this.#getIndexFromFileRank(squareName.charAt(0), squareName.charAt(1));
