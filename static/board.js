@@ -204,6 +204,8 @@ class Board
           }
         }
         pieceSquare.deletePiece();
+
+        PIECE_MOVEMENT_SOUND.play();
     }
 
     ///////////////////////

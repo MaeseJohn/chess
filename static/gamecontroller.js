@@ -20,6 +20,7 @@ const BISHOP_PROMOTION_IMG = document.getElementById("bishopimg");
 const QUEEN_PROMOTION_IMG  = document.getElementById("queenimg");
 const LINK_BUTTON          = document.getElementById("linkbutton");
 const NEW_GAME_BUTTON      = document.getElementById("newgamebutton");
+const PIECE_MOVEMENT_SOUND = document.getElementById("piecesound");
 
 
 // BUTTONS //
