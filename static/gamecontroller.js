@@ -3,7 +3,8 @@ const BOAR_SIZE   = 8;  // Namber of squares in a row and column
 const PIECES_SIZE = 95; // In pixels
 const LIGHT_BROWN = "#dbb779";
 const DARK_BROWN  = "#452a1e";
-const GREEN       = 'rgb(75,130,50,.7)';
+const YELLOW      = 'rgb(245, 249, 33, .9)';
+const GREEN       = 'rgb(75, 130, 50, .7)';
 const queryString = window.location.search
 
 let token;
@@ -96,13 +97,17 @@ function websocketconection()
     {
       playerColor = serverData.playerColor
     }
+
+    if(lastMove != undefined)
+    {
+      BOARD.unDrawValidMovements(lastMove)
+    }
   
     if(serverData.pieceSquare != "" && serverData.destinationSquare != "")
     {
       let pieceSquare = BOARD.getSquareFromFileRank(serverData.pieceSquare.charAt(0), serverData.pieceSquare.charAt(1))
       let destinationSquare = BOARD.getSquareFromFileRank(serverData.destinationSquare.charAt(0), serverData.destinationSquare.charAt(1))
     
-      
       if(serverData.promotion)
       {
         let piece;
@@ -139,7 +144,8 @@ function websocketconection()
       {
         BOARD.movePiece(pieceSquare, destinationSquare)
       }
-      
+
+      lastMove = [pieceSquare, destinationSquare];
       changeTurn();
     
       let king;
@@ -205,6 +211,7 @@ let whiteKing;
 let blackKing;
 let playerColor;
 let player2;
+let lastMove;
 
 function initGameVariables()
 {
@@ -216,6 +223,7 @@ function initGameVariables()
   actualSquare    = undefined;
   clickedSquare   = undefined;
   validMovements  = [];
+  lastMove        = undefined;
   whiteKing = BOARD.getSquareFromFileRank("E", "1");
   blackKing = BOARD.getSquareFromFileRank("E", "8");
 }
@@ -473,9 +481,11 @@ window.addEventListener('boardClick', evt =>
   }
   else if(actualSquare.getName() != clickedSquare.getName())
   {
+
+    BOARD.unDrawValidMovements(validMovements);
+
     if(!validMovements.includes(actualSquare))
     {
-      BOARD.unDrawValidMovements(validMovements);
       if(!drawMovemets())
       {
         pieceWasClicked = false;
@@ -490,6 +500,11 @@ window.addEventListener('boardClick', evt =>
      return
     }
 
+    if(lastMove != undefined)
+    {
+      BOARD.unDrawValidMovements(lastMove)
+    }
+
     if(Math.abs(clickedSquare.getFile().charCodeAt(0) - actualSquare.getFile().charCodeAt(0)) == 2 && clickedSquare.getPiece().getType() == "king")
     {
       BOARD.castlingMove(clickedSquare, actualSquare);
@@ -499,11 +514,12 @@ window.addEventListener('boardClick', evt =>
     {
       BOARD.movePiece(clickedSquare, actualSquare);
     }
-    
+
+    lastMove = [clickedSquare, actualSquare];
+
     serverData.pieceSquare = clickedSquare.getName();
     serverData.destinationSquare = actualSquare.getName();
 
-    BOARD.unDrawValidMovements(validMovements);
     changeTurn();
     serverData.turn = turn;
 

@@ -131,7 +131,7 @@ class Board
     
     castlingMove(kingSquare, destinationSquare)
     {
-        let kingIndex = this.#getIndexFromFileRank(kingSquare.getFile(), kingSquare.getRank())
+        let kingIndex        = this.#getIndexFromFileRank(kingSquare.getFile(), kingSquare.getRank())
         let destiantionIndex = this.#getIndexFromFileRank(destinationSquare.getFile(), destinationSquare.getRank())
         let rook;
         let rookdestination;
@@ -147,7 +147,10 @@ class Board
             kingSquare.getPiece().getColor() == "white" ? rookdestination = this.#squares[96] : rookdestination = this.#squares[26];
         }
         this.movePiece(kingSquare, destinationSquare);
-        this.movePiece(rook, rookdestination); 
+        this.movePiece(rook, rookdestination);
+        let undrawRookMove = [rook, rookdestination]; 
+        this.unDrawValidMovements(undrawRookMove);
+        
     }
     
     movePiece(pieceSquare, destinationSquare)
@@ -157,17 +160,18 @@ class Board
 
         this.#drawSquare(pieceSquare.getColor(), actualCoordinates.x, actualCoordinates.y);
         this.#drawSquare(destinationSquare.getColor(), destinationCoordinates.x, destinationCoordinates.y);
+        this.#drawSquare(YELLOW, actualCoordinates.x, actualCoordinates.y);
+        this.#drawSquare(YELLOW, destinationCoordinates.x, destinationCoordinates.y);
         
         destinationSquare.setPiece(pieceSquare.getPiece());
-
         this.#printPiece(destinationSquare.getPiece().getSrc(), destinationCoordinates.x, destinationCoordinates.y);
         
-     
         if(destinationSquare.getPiece().getType() == "king")
         { 
             destinationSquare.getPiece().getColor() == "white" ? whiteKing = destinationSquare : blackKing = destinationSquare;
             destinationSquare.getPiece().getColor() == "white" ? whiteCastling.king = false : blackCastling.king = false;
         }
+
         if(pieceSquare.getPiece().getType() == "rook")
         {
           if(pieceSquare.getFile() == "A")
