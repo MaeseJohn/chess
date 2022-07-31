@@ -8,6 +8,7 @@ const GREEN       = 'rgb(75, 130, 50, .7)';
 const queryString = window.location.search
 
 let token;
+let uri;
 let ws;
 
 const MODAL_TEXT_DIV       = document.getElementById("modaltextdiv");
@@ -24,16 +25,21 @@ const NEW_GAME_BUTTON      = document.getElementById("newgamebutton");
 // BUTTONS //
 LINK_BUTTON.onclick = function ()
 {
-  let copyurl = window.location.href + '?token=' + token;
+  let loc = window.location
+  let copyurl = loc.host + loc.pathname + '?token=' + token;
   navigator.clipboard.writeText(copyurl);
   copylinkmodal();
 }
 
 NEW_GAME_BUTTON.onclick = function ()
 {
+  if(ws != undefined)
+  {
+    ws.close();
+  }
   BOARD.initBoard();
   initGameVariables();
-  uri = makeUri();
+  makeUri();
   websocketconection();
   newgamemodal();
 }
@@ -69,13 +75,6 @@ MODAL_TEXT_DIV.addEventListener('click', hidemodal);
 
 // WEBSOCKET FUNCTIONS //
 
-let uri = makeUri();
-
-if(queryString != '')
-{
-  websocketconection();
-}
-
 function websocketconection()
 {
   ws = new WebSocket(uri)
@@ -96,11 +95,6 @@ function websocketconection()
     if(serverData.playerColor != "" && playerColor == "")
     {
       playerColor = serverData.playerColor
-    }
-
-    if(lastMove != undefined)
-    {
-      BOARD.unDrawValidMovements(lastMove)
     }
   
     if(serverData.pieceSquare != "" && serverData.destinationSquare != "")
@@ -142,8 +136,19 @@ function websocketconection()
       }
       else
       {
-        BOARD.movePiece(pieceSquare, destinationSquare)
+        BOARD.movePiece(pieceSquare, destinationSquare);
       }
+
+      if(lastMove.includes(pieceSquare))
+      {
+        lastMove.shift();
+      }
+      if(lastMove.includes(destinationSquare))
+      {
+        lastMove.pop();
+      }
+      
+      BOARD.unDrawLastMovement(lastMove);
 
       lastMove = [pieceSquare, destinationSquare];
       changeTurn();
@@ -175,28 +180,22 @@ function makeUri()
   var tokengenerator = function() {
     return rand() + rand(); // to make it longer
   };
-
   
   let loc = window.location;
-  let uri;
 
+  token = tokengenerator()
   uri = loc.href.charAt(4) == 's' ? 'wss:' : 'ws:'
-
   uri += '//' + loc.host;
-  
-  let q;
-  if(queryString == '')
-  {
-    token = tokengenerator()
-    q = 'createGame' + '?token=' + token
-  }
-  else
-  {
-    q = 'joinGame' + queryString
-  }
-  uri += loc.pathname + q 
-  
-  return uri;
+  uri += loc.pathname + 'createGame?token=' + token 
+}
+
+if(queryString != '')
+{
+  let loc = window.location;
+  uri = loc.href.charAt(4) == 's' ? 'wss:' : 'ws:';
+  uri += '//' + loc.host;
+  uri += loc.pathname + 'joinGame' + queryString;
+  websocketconection(uri);
 }
 
 // GAME VARIABLES //
@@ -223,7 +222,7 @@ function initGameVariables()
   actualSquare    = undefined;
   clickedSquare   = undefined;
   validMovements  = [];
-  lastMove        = undefined;
+  lastMove        = [];
   whiteKing = BOARD.getSquareFromFileRank("E", "1");
   blackKing = BOARD.getSquareFromFileRank("E", "8");
 }
@@ -482,10 +481,9 @@ window.addEventListener('boardClick', evt =>
   else if(actualSquare.getName() != clickedSquare.getName())
   {
 
-    BOARD.unDrawValidMovements(validMovements);
-
     if(!validMovements.includes(actualSquare))
     {
+      BOARD.unDrawValidMovements(validMovements);
       if(!drawMovemets())
       {
         pieceWasClicked = false;
@@ -500,11 +498,6 @@ window.addEventListener('boardClick', evt =>
      return
     }
 
-    if(lastMove != undefined)
-    {
-      BOARD.unDrawValidMovements(lastMove)
-    }
-
     if(Math.abs(clickedSquare.getFile().charCodeAt(0) - actualSquare.getFile().charCodeAt(0)) == 2 && clickedSquare.getPiece().getType() == "king")
     {
       BOARD.castlingMove(clickedSquare, actualSquare);
@@ -514,12 +507,15 @@ window.addEventListener('boardClick', evt =>
     {
       BOARD.movePiece(clickedSquare, actualSquare);
     }
+    
+    BOARD.unDrawLastMovement(lastMove);
 
     lastMove = [clickedSquare, actualSquare];
 
+    BOARD.unDrawValidMovements(validMovements);
+
     serverData.pieceSquare = clickedSquare.getName();
     serverData.destinationSquare = actualSquare.getName();
-
     changeTurn();
     serverData.turn = turn;
 

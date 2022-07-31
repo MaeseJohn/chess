@@ -105,15 +105,35 @@ class Board
     {
         validMovements.map(item => {
             let coordinates = item.getCoordinatesFromName();
+
+            if(!lastMove.includes(item))
+            {
+                this.#drawSquare(item.getColor(), coordinates.x, coordinates.y);
+            }
+            else
+            {
+                this.#drawSquare(YELLOW, coordinates.x, coordinates.y);
+            }
             
+            if(!item.isEmpty())
+            {
+                this.#printPiece(item.getPiece().getSrc(), coordinates.x, coordinates.y);
+            }
+        })  
+    }
+
+    unDrawLastMovement(lastMove)
+    {
+        lastMove.map(item => {
+            let coordinates = item.getCoordinatesFromName();
+
             this.#drawSquare(item.getColor(), coordinates.x, coordinates.y);
             
             if(!item.isEmpty())
             {
                 this.#printPiece(item.getPiece().getSrc(), coordinates.x, coordinates.y);
             }
-        })
-        
+        })  
     }
 
     drawValidMovements(validMovements)
@@ -207,6 +227,7 @@ class Board
         img.onload = (() =>
         {
             this.#ctx.drawImage(img, x * this.#squaresize, y * this.#squaresize, this.#squaresize, this.#squaresize);
+            console.log(src)
         }).bind(this)
     }
 
@@ -214,7 +235,6 @@ class Board
     { 
         let coordinates = (f, r) => this.#squares[f + r].getCoordinatesFromName();
       
-
         for(var i = 0; i < 8; i++)
         {
             this.#printPiece(this.#squares[i + 21].getPiece().getSrc(), coordinates(i, 21).x, coordinates(i, 21).y);
