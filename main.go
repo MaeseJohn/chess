@@ -24,7 +24,6 @@ type ChessData struct {
 	Checkmate         bool   `json:"checkmate"`
 	Promotion         bool   `json:"promotion"`
 	Player2           bool   `json:"player2"`
-	Finish            bool   `json:"finish"`
 	Disconect         bool   `json:"disconect"`
 	Turn              string `json:"turn"`
 	PieceSquare       string `json:"pieceSquare"`
@@ -120,9 +119,6 @@ func playGame(c echo.Context, ws *websocket.Conn, canal1 chan ChessData, canal2 
 		err := websocket.JSON.Receive(ws, &data)
 		if err != nil {
 			c.Logger().Error(err)
-			return
-		}
-		if data.Finish {
 			return
 		}
 		canal1 <- data

@@ -20,6 +20,7 @@ const BISHOP_PROMOTION_IMG = document.getElementById("bishopimg");
 const QUEEN_PROMOTION_IMG  = document.getElementById("queenimg");
 const LINK_BUTTON          = document.getElementById("linkbutton");
 const NEW_GAME_BUTTON      = document.getElementById("newgamebutton");
+const ABANDOM_BUTTON       = document.getElementById("abandombutton");
 const PIECE_MOVEMENT_SOUND = document.getElementById("piecesound");
 
 
@@ -45,6 +46,16 @@ NEW_GAME_BUTTON.onclick = function ()
   newgamemodal();
 }
 
+ABANDOM_BUTTON.onclick  =  function()
+{
+  if(ws != undefined && ws.readyState == 1)
+  {
+    ws.close();
+    console.log(ws)
+    abandommodal();
+  }
+}
+
 // MODAL FUNCTIONSS //
 
 function newgamemodal()
@@ -61,7 +72,13 @@ function copylinkmodal()
 
 function disconectmodal()
 {
-  MODAL_TEXT.textContent = 'The opposing player disconnected.';
+  MODAL_TEXT.textContent = 'The opposing player left the game.';
+  MODAL_TEXT_DIV.style.display = "inline-block";
+}
+
+function abandommodal()
+{
+  MODAL_TEXT.textContent = 'You left the game.';
   MODAL_TEXT_DIV.style.display = "inline-block";
 }
 
@@ -86,15 +103,20 @@ function websocketconection()
 {
   ws = new WebSocket(uri)
   
+  ws.onclose= function()
+  {
+    console.log("close")
+  }
+
   ws.onmessage = function(evt) {
   
     let serverData = JSON.parse(evt.data)
 
-    console.log(serverData)
     if(serverData.disconect)
     {
-      console.log("hola")
       disconectmodal()
+      ws.close()
+      return
     }
 
     if(serverData.player2)
@@ -169,14 +191,10 @@ function websocketconection()
     
       if(serverData.checkmate && checkMate())
       {
-        let finish = {
-          finish: true
-        }
+        checkmate = true;
         winmodal();
-        ws.send(JSON.stringify(finish))
       }
     }
-  
   }
 }
 
@@ -216,6 +234,7 @@ let actualSquare;
 let clickedSquare;
 let validMovements;
 let checks;
+let checkmate;
 let whiteKing;
 let blackKing;
 let playerColor;
@@ -224,8 +243,10 @@ let lastMove;
 
 function initGameVariables()
 {
+ 
   turn            = "white";
   checks          = [];
+  checkmate       = false;
   player2         = false;
   playerColor     = "";
   pieceWasClicked = false;
@@ -380,7 +401,7 @@ window.addEventListener('PromotionChoice', evt =>
 {
   let serverData = {
     castling: false,
-    checkMate: false,
+    checkmate: false,
     promotion: false,
     promotionChoice: "",
     pieceSquare: "",
@@ -422,7 +443,7 @@ window.addEventListener('PromotionChoice', evt =>
     
     if(checkMate())
     {
-      serverData.checkMate = true;
+      serverData.checkmate = true;
       winmodal();
     }
     serverData.turn              = turn;
@@ -469,7 +490,7 @@ window.addEventListener('boardClick', evt =>
 
   let serverData = {
     castling: false,
-    checkMate: false,
+    checkmate: false,
     promotion: false,
     promotionChoice: "",
     pieceSquare: "",
@@ -477,7 +498,7 @@ window.addEventListener('boardClick', evt =>
     turn: "",
   }
 
-  if(playerColor != turn || !player2)
+  if(playerColor != turn || !player2 || checkmate)
   {
     return
   }
@@ -535,6 +556,7 @@ window.addEventListener('boardClick', evt =>
     {
       winmodal();
       serverData.checkmate = true;
+      checkmate = true;
     }
 
     pieceWasClicked = false;
