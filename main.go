@@ -25,6 +25,7 @@ type ChessData struct {
 	Promotion         bool   `json:"promotion"`
 	Player2           bool   `json:"player2"`
 	Finish            bool   `json:"finish"`
+	Disconect         bool   `json:"disconect"`
 	Turn              string `json:"turn"`
 	PieceSquare       string `json:"pieceSquare"`
 	DestinationSquare string `json:"destinationSquare"`
@@ -41,6 +42,13 @@ func createGame(c echo.Context) error {
 			Chanel2: make(chan ChessData),
 		}
 		defer game.closeGame()
+
+		defer func() {
+			data := ChessData{
+				Disconect: true,
+			}
+			game.Chanel1 <- data
+		}()
 
 		token := c.QueryParam("token")
 		games[token] = game
@@ -76,6 +84,12 @@ func joinGame(c echo.Context) error {
 		}
 
 		games[token].Chanel2 <- data
+		defer func() {
+			data := ChessData{
+				Disconect: true,
+			}
+			games[token].Chanel2 <- data
+		}()
 
 		err := websocket.JSON.Send(ws, &playerColor)
 		if err != nil {

@@ -59,6 +59,12 @@ function copylinkmodal()
   MODAL_TEXT_DIV.style.display = "inline-block";
 }
 
+function disconectmodal()
+{
+  MODAL_TEXT.textContent = 'The opposing player disconnected.';
+  MODAL_TEXT_DIV.style.display = "inline-block";
+}
+
 function winmodal()
 {
   let wincolor;
@@ -79,14 +85,17 @@ MODAL_TEXT_DIV.addEventListener('click', hidemodal);
 function websocketconection()
 {
   ws = new WebSocket(uri)
-
-  ws.onopen = function() {
-    console.log('Connected')
-  }
   
   ws.onmessage = function(evt) {
   
     let serverData = JSON.parse(evt.data)
+
+    console.log(serverData)
+    if(serverData.disconect)
+    {
+      console.log("hola")
+      disconectmodal()
+    }
 
     if(serverData.player2)
     {
@@ -344,8 +353,6 @@ function promotionEvent(evt)
   let rect = promotioncontent.getBoundingClientRect()
   let x = evt.clientX - rect.left;
   let y = evt.clientY - rect.top;
-  console.log(rect)
-  console.log(x, y)
 
   let choice;
   

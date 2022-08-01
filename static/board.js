@@ -229,7 +229,6 @@ class Board
         img.onload = (() =>
         {
             this.#ctx.drawImage(img, x * this.#squaresize, y * this.#squaresize, this.#squaresize, this.#squaresize);
-            console.log(src)
         }).bind(this)
     }
 
