@@ -20,7 +20,7 @@ const BISHOP_PROMOTION_IMG = document.getElementById("bishopimg");
 const QUEEN_PROMOTION_IMG  = document.getElementById("queenimg");
 const LINK_BUTTON          = document.getElementById("linkbutton");
 const NEW_GAME_BUTTON      = document.getElementById("newgamebutton");
-const ABANDOM_BUTTON       = document.getElementById("abandombutton");
+const ABANDON_BUTTON       = document.getElementById("abandonbutton");
 const PIECE_MOVEMENT_SOUND = document.getElementById("piecesound");
 
 
@@ -46,13 +46,13 @@ NEW_GAME_BUTTON.onclick = function ()
   newgamemodal();
 }
 
-ABANDOM_BUTTON.onclick  =  function()
+ABANDON_BUTTON.onclick  =  function()
 {
   if(ws != undefined && ws.readyState == 1)
   {
     ws.close();
     console.log(ws)
-    abandommodal();
+    abandonmodal();
   }
 }
 
@@ -76,7 +76,7 @@ function disconectmodal()
   MODAL_TEXT_DIV.style.display = "inline-block";
 }
 
-function abandommodal()
+function abandonmodal()
 {
   MODAL_TEXT.textContent = 'You left the game.';
   MODAL_TEXT_DIV.style.display = "inline-block";
